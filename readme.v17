@@ -1,0 +1,15 @@
+Changes with 1.7 
+
+	(February 1994) Replaced rdf2 and rss with prdf, prss, which
+	calculate informative score probabilities by fitting the
+	distribution of shuffled scores to an extreme value
+	distribution.  The curve fitting routines in rweibull.c were
+	provided by Phil Green, Washington U., St. Louis.
+
+	"-i" switch to reverse-complement query sequence if it is
+	DNA.
+
+	Fix bug in zzlgmata.c that caused problems with alignments.
+
+	Fix histogram routine to work properly with ln() normalized
+	scores.

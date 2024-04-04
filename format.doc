@@ -1,0 +1,118 @@
+					July 9, 1986
+
+	The programs FASTA, LFASTA and RDF2 are new versions of a "universal"
+FASTP/FASTN program.  They are directly descended from FASTN, but instead
+of using a fixed alphabet (ACGT or amino acids) and built-in scoring
+matrices, all of the search parameters can be read in from a disk file.
+
+	FASTA, TFASTA, LFASTA, RDF2, and the sequence analysis
+programs AACOMP, GARNIER, (T)GREASE, CHOFAS, all read files in the
+standard protein library format, i.e.
+
+	>CODE - title line
+	either protein sequence or DNA sequence
+
+
+	>CODE2 - next sequence
+	....
+
+The FASTGB program reads the GENBANK floppy disk format for the DNA
+sequence library.  It should only be used copies of these files.  You must
+set FILES=16 (or greater) in a CONFIG.SYS file when using GFASTA, and you
+should set the environment variable:
+
+	set GBLIB=c:\bbnlib\
+
+so the files can be found.
+
+The scoring matrix file is determined by setting the environment variable
+SMATRIX.  So by typing:
+
+	set SMATRIX=c:\fasta\dna.mat
+
+the program will use the DNA alphabet (A,C,G,T,U,R,Q,N, etc) and scoring
+matrix used in FASTN.  If you do not set SMATRIX to anything, it uses an
+internal alphabet and scoring matrix for proteins which is identical to
+FASTP.  The configuration files on the disk are:
+
+	codaa.mat	genetic code matrix for proteins
+	idnaa.mat	identity matrix for proteins using PAM250 self scores
+	iidnaa.mat	identity matrix for proteins using 1, 0
+	prot.mat	pam250 matrix
+	dna.mat	DNA alphabet and scoring matrix.
+	altprot.mat	an experimental replacement for the PAM matrix
+			developed by D. Lipman
+
+The format of the SMATRIX file is:
+
+line1:	;P or ;D, this comment (if present) is used to determine whether
+		  amino acids (aa) or nucleotides (nt) should be used
+		  int the program.
+line2: scoring parameters
+	KFACT BESTOFF BESTSCALE BKFACT BKTUP BESTMAX HISTSIZ
+
+	KFACT is used in the "diagonal method" search for the best
+initial regions, for proteins, KFACT = 4, for DNA, KFACT = 1.
+
+	BESTOFF, BESTSCALE, BKFACT, BKTUP and BESTMAX are used to
+calculate the cutoff score.  The bestcut parameter is calculated from
+parameters 2 - 6. If N0 is the length of the query sequence:
+
+	BESTCUT = BESTOFF + N0/BESTSCALE + BKFACT*(BKTUP-KTUP)
+	if (BESTCUT>BESTMAX) BESTCUT=BESTMAX
+
+HISTSIZ is the size of the histogram interval.
+
+line3: deletion penalties.
+	the first value is the penalty for the first residue in a gap,
+the second value is the penalty charged to each subsequent residue in
+a gap.
+
+line4: end of sequence characters
+	(these are not required, since IFASTA uses '>' for the
+beginning of a sequence, but they are included).  If not used, the
+line must be left blank.
+
+line5: The alphabet
+
+line6: the hash values for each letter in the alphabet.  This allows
+several characters to be hashed to the same value, e.g. a DNA sequence
+alphabet with A = adenosine, 1 = probably adenosine, P = purine, would have
+each of these characters hash to 0.  The lowest hash value should be 0.
+
+line7 - n:
+
+	The lower triangle of the symmetric scoring matrix.  There should
+be exactly as many lines as there are characters in the alphabet, and the
+last line should have n-1 entries.  The program does not check for the
+length of each line (perhaps it should), so it is easy to screw up a matrix
+badly by having fewer entries in the scoring matrix than in the alphabet,
+or vice-versa.
+
+	In addition to the using the universal scoring matrix, FASTA has
+several improvements from FASTN.  You can search libraries
+that are made up of a number of files.  For example:
+
+	FASTA test.seq @rodent.lib
+
+would search the files named in the rodent.lib file.  If rodent.lib
+contained:
+
+	rat.lib
+	mouse.lib
+	hamster.lib
+
+these three files would be searched by FASTA.  This can be used to search a
+number of individual sequences without combining them into one file.
+
+	FASTA also uses an improved method for calculating the initial
+score, which allows the scores of several similar to be combined.  Thus
+FASTA now reports three scores in the summary, 
+
+	initn - the best score using multiple region alignment.
+	init1 - the old fastp/n score from the best single region
+	opt - 	an optimized score around the init0 region.  An optn score
+		is not ready yet.
+
+
+

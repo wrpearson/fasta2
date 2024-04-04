@@ -1,0 +1,129 @@
+
+Changes with 2.0  (March, 1995)
+
+	WARNING - Optimization is now turned on by default.  The
+	meaning of the "-o" option has been reversed.  "-o" now turns
+	off optimization, reverting to the earlier method of sorting
+	by "initn" scores.
+
+	Change default protein matrix to BLOSUM50.  PAM250 is
+	still available with -s 250.  Change program to accept gap
+	penalties from the command line with "-f" (-12) and "-g" (-2).
+
+	Provide MARKX=4, which allows one to display the conserved
+	regions of the query sequence after a library search.
+
+	Calculate explicit probability estimates for FASTA, TFASTA,
+	and SSEARCH.  Estimates assume that the library contains a large
+	number of unrelated sequences.  If this is not correct, the
+	estimates are useless (and should be turned off with the -z
+	flag).
+
+	The width of the band used to calculate optimized scores is
+	now variable.  For proteins and ktup=1, 32 residues are used,
+	otherwise 16 residues are used.  For DNA, 16 residues are
+	used. This value can be changed with the "-y" option.
+
+	FASTA alignments now use the Smith-Waterman algorithm; there
+	is no longer a limit on gap size for FASTA alignments. 
+
+	Fixed a rare bug in lalign/plalign for low gap penalties.
+
+	Fixed lfasta to read one letter filenames in second position.
+
+April 5, 1995
+
+	Fixed bug in blast-format file reading treat sequences that do
+	not end in "*" properly.
+
+May, 1995
+
+	More accurate display of the expected value histogram.  The
+	quality of the fit is now quantitated with the
+	Kolmogorov-Smirnov statistic.
+
+	DNA match/mismatch penalties changed to +5/-4.
+
+	An expectation theshold (-E) is provided for displaying
+	scores.
+
+July, 1995
+
+	Corrected a very serious bug in ssearch E()-score calculation
+	for large databases.
+
+	Corrected a minor problem with histogram scaling.
+
+	Removed Kolmogorov-Smirnov statistic if histogram not shown.
+
+	Show correct scoring matrix if specified matrix is not
+	found.
+
+August, 1995
+
+	Some corrections so that "-z" flag works properly and statistical
+	calculations fall back properly when no distribution of lengths
+	is available.
+
+2.0x3	Change default DNA and TFASTA alignments to older band-limited
+	Smith-Waterman rather than full Smith-Waterman.  Now DNA
+	sequence searches are as fast as before (with Smith-Waterman
+	alignments, they were often 50 times slower).  Full Smith-Waterman
+	alignments are available with the "-A" option.
+
+	Small changes in the way that memory is allocated for
+	alignments in FASTA, TFASTA, LFASTA/PLFASTA, and SSEARCH.
+
+	The DOS/BorlandC and UNIX versions have been merged.  All
+	files necessary for compilation on Dos/WinNT are included.
+
+	Added -O option to FASTA, TFASTA, LFASTA, PRSS, PRDF, LALIGN, ALIGN
+	to specify output file.
+
+2.0u3	merge of Mac FASTA with Win/DOS, Unix FASTA to a single set of files.
+
+Sept, 1995
+
+	add -Q option to prss, prdf.  Fix bug in -O option for those
+	programs.
+
+	Allow longer lengths for filenames.  Use QFILE_SIZE and LFILE_SIZE
+	to define lengths for query and library file names (40, 80 for
+	microcomputers, 256 for Unix).
+
+November, 1995
+
+	Fix bug in nxgetaa.c that prevented reading multiple
+	blast-formatted files.
+
+February, 1996
+
+	see readme.v20u4 for more information
+
+	added -m 10 option for parseable output
+
+	added library_type 6 for GCG formatted files
+
+	added -L option for long descriptions of library sequences
+
+	"randseq" random shuffle program now available.
+
+March, 1996
+
+	modified nxgetaa for 12 character locus names.
+
+	fixed a bug in lfasta that appears with very long sequences
+
+April, 1996
+
+	Make certain '-z' option really works (required for libraries with
+	sequences < 10 aa).
+
+	Removed duplicate sw_score: in ssearch with -m 10.
+
+	Added -DPROGRESS to report progress of search with "....".
+
+Mar, 1996
+
+	Added "fastx", see readme.v20u5.  "-h" is not "-H".
+

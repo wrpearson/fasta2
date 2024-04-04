@@ -1,0 +1,35 @@
+#define TRUE 1
+#define FALSE 0
+ 
+#define MAXLINE 128
+
+#define MAXWORDS 10
+#define MAXCHARS 100
+
+char ignore;
+char filename[40];
+FILE *fbuf;
+
+int numwrds,numchars;
+int numlets;
+char *nextbyte;		/* pointer to position in wordarr for next char */
+char *wordarr;		/* wordarr[MAXCHARS] holds the patterns */
+
+char *ascarr;		/* the mapper from letter to subset */
+
+char **wordptr;		/* points to each word */
+int nextwrd;		/* index into wordptr[] next empty word - # of words */
+
+#define MAXSTATE 100
+int **tabarr;		/* holds the state table */
+int mstate;
+int *backptr;
+char **bword;
+
+struct queue {
+	char *current;
+	char *name;
+	int qstate;
+	} *squeue, *qptr;
+
+int head, tail, qlength;

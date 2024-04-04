@@ -1,0 +1,28 @@
+
+February, 1994 -> 17
+
+	Replace rdf2 and rss with prdf and prss.  Curve fitting routines
+	were provided by Phil Green, Washington U., St. Louis.
+
+	Provide the "-i" option to reverse-complement the query
+	sequence if it is DNA.
+
+	Fix a bug in the alignment routine (zzlgmata.c) that caused
+	an error message on some machines, bus errors on others.
+
+August, 1994 -> ssearch 17a1
+
+	Corrections to fasta.1 and ssearch.1 man pages.
+
+	Correction to ssearch alignment routine.
+
+Sept, 1994 > 17a2
+
+	Minor additions to existing man pages.  Fix programs to
+	report identify between 'T' and 'U' for DNA/RNA.
+
+November, 1994
+
+	Fix core dump with prss/prdf when default window size used.
+
+	Produce a more representative histogram display.

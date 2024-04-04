@@ -1,0 +1,131 @@
+Changes with 1.6c31a
+
+	(August, 1993) Released support for NCBI SEARCH and
+	BLASTP/BLASTN formats.
+
+	(November, 1993) Changes to nxgetaa.c to accomodate changes in
+	embl library format. Changes to ncbl_lib.c to work on DNA
+	sequences
+
+Changes with 1.6c24
+
+	(December 1992)  Added -e option for more selective scores.
+
+	(April 1993) Added #define SUPERFAMNUM for genpept.fasta
+	users.  By default, superfamily numbers are not returned from
+	fasta format (libtype=1) files.
+
+	(May 1993) Changed window shuffle routine in rdf2, rss, to
+	preserve locality of shuffle.
+
+Changes with version 1.6b
+
+	FASTA version 1.6b uses a new method for calculating optimal
+scores in a band (the optimization or last step in the FASTA
+algorithm). In addition, it uses a linear-space method for calculating
+the actual alignments.  The FASTA package also includes four new
+programs:
+
+	ssearch		a program to search a sequence database using
+			the rigorous Smith-Waterman algorith (this
+			program is about 100-fold slower than FASTA
+			with ktup=2 (for proteins).
+
+	rss		a version of rdf2 that uses a rigorous
+			Smith-Waterman calculation to score
+			similarities
+
+	lalign		A rigorous local sequence alignment program
+			that will display the N-best local alignments
+			(N=10 by default).
+
+	plalign		a version of lalign that plots the local alignments.
+
+
+	The lalign/plalign program incorporate the "sim" algorithm
+described by Huang and Miller (1991) Adv. Appl. Math. 12:337-357.
+The ssearch and rss programs incorporate algorithms described by
+Huang, Hardison, and Miller (1990) CABIOS 6:373-381.
+
+	Two new command line options are available:
+
+	-n	indicates that the query file is a nucleotide
+		sequence.  This  option can be very useful when
+		searching with consensus regulatory sequences.
+
+	-x "off1 off2"  allows you to specify an offset for the
+		beginning of a DNA or protein sequence.  For example,
+		if you are comparing upstream regions for two genes, and
+		the first sequence contains 500 nt of upstream
+		sequence while the second contains 300 nt of upstream
+		sequence, you might try: 
+
+		fasta -x "-500 -300" seq1.nt seq2.nt
+
+		This option will not work properly with the translated
+		library sequence with tfasta.
+
+		(You should double check to be certain the negative
+		numbering works properly.)
+
+Changes with version 1.5
+
+	FASTA version 1.5 includes a number of substantial revisions
+to improve the performance and sensistivity of the program. Two
+changes are apparent.  It is now possible to tell the program to
+optimize all of the init1 scores greater than a threshold.  The
+threshold is set at the same value as the old FASTA cutoff score
+(approximately 0.5 standard deviations above the mean for average
+length sequences).  For highest sensitivity, you can use the -c option
+to set the threshold to 1.  (This will slow the search down about
+5-fold).  In addition, you can tell FASTA to sort the results by the
+"init1" score, rather than the "initn" score, by using the "-1"
+option.  FASTA -1 ... will report the results the way the older FASTP
+program did.
+
+	A new method has been provided for selecting libraries. In the
+past, one could enter the name of a sequence file to be searched or a
+single letter that would specify a library from the list included in
+the $FASTLIBS file. Now, you can specify a set of library files with a
+string of letters preceeded by a '%'.  Thus, if the FASTLIBS file has
+the lines:
+
+	Genbank 64 primates$1P/seqlib/gbpri.seq
+	Genbank 64 rodents$1R/seqlib/gbrod.seq
+	Genbank 64 other mammals$1M/seqlib/gbmam.seq
+	Genbank 64 vertebrates $1B/seqlib/gbvrt.seq
+
+Then the string: "%PRMB" would tell FASTA to search the four libraries
+listed above.  The %PRMB string can be entered either on the command
+line or when the program asks for a filename or library letter.
+
+	FASTA1.5 also provides additional flexibility for specifying
+the number of results and alignments to be displayed with the -Q
+(quiet) option.  The "-b number" option allows you to specify the number of
+sequence scores to show when the search is finished.  Thus
+
+	FASTA -b 100 ...
+
+would tell the program to display the top 100 sequence scores. In the
+past, if you displayed 100 scores (in -Q mode), you would also have
+store 100 alignments. The "-d" option allows you to limit the number
+of alignments shown.  FASTA -b 100 -d 20 would show 100 scores and 20
+alignments.
+
+	The old "CUTOFF" parameter is no longer used.  The program
+stores the best 2000 (IBM-PC, MAC) or 6000 (Unix, VMS) scores and then
+throws out the lowest 25%, stores the next 500 (1500) better than the
+threshold determined with the first scores were discarded, and repeats
+the process as the library is scanned.  As a result, the best 1500 -
+2000 (4500 - 6000) scores are saved.  The old cut-off parameter was
+also used to set the joining threshold for the calculation of the
+initn score from initial regions.  This joining threshold can now be
+set with the -g option or the GAPCUT parameter.
+
+	Finally, FASTA can provide a complete list of all of the
+sequences and scores calculated to a file with the "-r" (results)
+option.  FASTA -r results.out ... creates a file with a list of scores
+for every sequence in the library.  The list is not sorted, and only
+includes those scores calculated during the initial scan of the
+library (the optimized score is not calculated unless the -o option is
+used).

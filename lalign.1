@@ -1,0 +1,184 @@
+.TH LALIGN/PLALIGN 1 local
+.SH NAME
+lalign \- compare two protein or DNA sequences for local similarity and show the local sequence alignments
+
+plalign,flalign \- compare two sequences for local similarity and plot the local sequence alignments
+
+.SH SYNOPSIS
+.B lalign
+[-EKfgiImnNOQqrRswxZ] sequence-file-1 sequence-file-2 
+.br
+.B plalign
+[-EKfgiImnNQqrRsvwxZ] sequence-file-1 sequence-file-2 
+
+.SH DESCRIPTION
+.B lalign
+and
+.B plalign
+programs compare two sequences looking for local sequence
+similarities.
+.B lalign/plalign
+use code developed by X. Huang and W. Miller (Adv. Appl. Math. (1991)
+12:337-357) for the "sim" program.  (Version 2.1 uses sim2 code.) While
+.B ssearch
+reports only the best alignment between the query sequence and the
+library sequence,
+.B lalign
+and
+.B plalign
+will report all the alignments with pair-wisse probabilities < 0.05 (default,
+modified with -E #) between the two sequences
+.B lalign
+shows the actual local alignments between the two sequences and their
+scores, while
+.B plalign
+produces a plot of the alignments that looks similar to a
+`dot-matrix' homology plot.  On Unix\(tm systems,
+.B plalign
+generates postscript output.
+.B flalign
+generates graphic commands for the GCG "figure" program.
+.PP
+Probability estimates for the 
+.B lalign/plalign/flalign
+programs are based on the parameters provided by Altschul and Gish
+(1996) Meth. Enzymol. 266:460-480.  These parameters are available for
+BLOSUM50, BLOSUM62, and PAM250 scoring matrices with specific gap
+penalties, and also for DNA comparison with a gap penalty of -16, -4.
+Probability estimates are not available for other scoring matrices and
+gap penalties.
+.PP
+The E(10,000) values reported with the alignments are the
+pairwise-alignment probabilities multiplied by 10,000. These estimates
+approximate the significance from a search of a 10,000 entry database.
+They differ from the -E 0.05 initial theshold by the same factor of
+10,000.  This is an unfortunate inconsistency, but I believe that
+it is helpful to provide the perspective of a database search.
+.PP
+The
+.B lalign/plalign/fasta
+programs use a standard text format sequence file.  Lines beginning
+with '>' or ';' are considered comments and ignored; sequences can be upper or
+lower case, blanks,tabs and unrecognizable characters are ignored.
+.B lalign/plalign
+expect sequences to use the single letter amino acid codes, see
+.B protcodes(1)
+\&.
+.SH OPTIONS
+.PP
+.B lalign
+and the other programs can be directed to change the scoring matrix,
+search parameters, output format, and default search directories by
+entering options on the command line (preceeded by a `\-'). All of the
+options should preceed the file name and ktup arguments). Alternately,
+these options can be changed by setting environment variables.  The
+options and environment variables are:
+.TP
+\-E #
+Pairwise-probability limit (default -E 0.05).
+.TP
+\-K #
+maximum number of alignments to be shown (default -K 50).
+.TP
+\-f #
+Penalty for the first residue a gap (-14 by default).
+.TP
+\-g #
+Penalty for each additional residue in a gap (-4 by default).
+.TP
+\-i
+Compare the reverse complement (DNA only).
+.TP
+\-I
+Show alignment between identical sequences.  Normally, the identity
+alignment is not shown.
+.TP
+\-m #
+.B (MARKX)
+=1,2,3. Alternate display of matches and mismatches in
+alignments. MARKX=1 uses ":","."," ", for identities, consevative
+replacements, and non-conservative replacements, respectively. MARKX=2
+uses " ","x", and "X".  MARKX=3 does not show the second sequence, but
+uses the second alignment line to display matches with a "."  for
+identity, or with the mismatched residue for mismatches.  MARKX=3 is
+useful for aligning large numbers of similar sequences.
+.TP
+\-n
+pre-specify DNA sequence, rather than infer from  sequence.
+.TP
+\-N #
+limit first and second sequences to '#' residues.
+.TP
+\-s str
+.B (SMATRIX)
+the filename of an alternative scoring matrix file.  For protein
+sequences, BLOSUM50 is used by default; PAM250 can be used with the
+command line option
+.B -s P250\c
+\&, BLOSUM62 with "-s BL62".
+.TP
+\-v str
+.B (LINEVAL)
+(plalign only)
+.B plalign
+can use up to 4 different line styles to denote the
+scores of local alignments.  The scores that correspond to these
+line styles can be specified with the environment variable
+.B LINVAL\c
+\&, or with the
+.B \-v
+option.  In either case, a string with three numbers separated by
+spaces should be given.  This string must be surrounded by double
+quotation marks.  For example, LINEVAL="200 100 50" tells plalign
+to use solid lines for local alignments with scores greater than 200,
+long dashed lines for scores between 100 and 200, short dashed lines
+for scores between 50 and 100, and dotted lines for scores less than 50.
+.in +0.5i
+plalign -v "200 100 50"
+.in -0.5i
+Normally, the values are 200, 100, and 50 for protein sequence comparisons
+and 400, 200, and 100 for DNA sequence comparisons.
+.TP
+\-w #
+.B (LINLEN)
+output line length for sequence alignments.  (normally 60,
+can be set up to 200).
+.SH EXAMPLES
+.TP
+(1)
+.B lalign
+mchu.aa mchu.aa
+.PP
+Compare the amino acid sequence in the file mchu.aa with itself and
+report the ten best local alignments.  Sequence files should have the form:
+.nf
+.in +5n
+
+>MCHU - Calmodulin - Human ...
+ADQLTEEQIAEF ...
+.in +0n
+
+.fi
+.TP
+(2)
+.B plalign
+-K 100 -E 0.01 qrhuld.aa egmsmg.aa 
+.PP
+Display up to 100 local alignments of the LDL
+receptor (qrhuld.aa) with epidermal growth factor precursor
+(egmsmg.aa) with pairwise probabilities better than 0.01.
+Plot the results on the screen.
+.TP
+(3)
+.B lalign
+.PP
+Run the
+.B lalign
+program in interactive mode.  The program will prompt for
+the name of two sequence files and the number of alignments to show.
+.SH "SEE ALSO"
+ssearch(1), prss(1), fasta(1), protcodes(5), dnacodes(5)
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU

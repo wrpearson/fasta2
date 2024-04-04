@@ -1,0 +1,201 @@
+Changes with 2.0u4 (February, 1996)
+
+Added '-L' option, which provides a longer discription of the library
+sequence.
+
+Fixed a bug in the -m 10 parseable output.
+
+Support is now provided for version 8.0 GCG libraries, both protein
+and DNA. Use library type 6.
+
+Changes with 2.0x4  (January, 1996)
+
+The major change in with 2.0x4 is the ability to get a parseable
+output from FASTA/TFASTA/SSEARCH.  This can be done using output
+option -m 10.  With -m 10, the initial histogram and list of best
+scores is unchanges, but the alignments are now in a parseable form:
+
+>>>mgstm1.aa, 217 aa vs s library
+; pg_name: FASTA
+; pg_ver: version 2.0x4 Jan., 1996
+; pg_matrix: BLOSUM50
+; pg_gap-pen: -12 -2
+; pg_ktup: 1
+; pg_optcut: 30
+; pg_cgap: 42
+>>GTB1_MOUSE GLUTATHIONE S-TRANSFERASE GT8.7 (EC 2.5.1.18
+; fa_initn: 1490
+; fa_init1: 1490
+; fa_opt: 1490
+; fa_z-score: 1916.0
+; fa_expect:      0
+; sw_score: 1490
+; sw_ident: 1.000
+; sw_overlap: 217
+>GT8.7  ..
+; sq_len: 217
+; sq_type: p
+; al_start: 1
+; al_stop: 217
+; al_display_start: 1
+PMILGYWNVRGLTHPIRMLLEYTDSSYDEKRYTMGDAPDFDRSQWLNEKF
+KLGLDFPNLPYLIDGSHKITQSNAILRYLARKHHLDGETEEERIRADIVE
+NQVMDTRMQLIMLCYNPDFEKQKPEFLKTIPEKMKLYSEFLGKRPWFAGD
+KVTYVDFLAYDILDQYRMFEPKCLDAFPNLRDFLARFEGLKKISAYMKSS
+RYIATPIFSKMAHWSNK
+>GTB1_MOUSE ..
+; sq_len: 217
+; sq_type: p
+; al_start: 1
+; al_stop: 217
+; al_display_start: 1
+PMILGYWNVRGLTHPIRMLLEYTDSSYDEKRYTMGDAPDFDRSQWLNEKF
+KLGLDFPNLPYLIDGSHKITQSNAILRYLARKHHLDGETEEERIRADIVE
+NQVMDTRMQLIMLCYNPDFEKQKPEFLKTIPEKMKLYSEFLGKRPWFAGD
+KVTYVDFLAYDILDQYRMFEPKCLDAFPNLRDFLARFEGLKKISAYMKSS
+RYIATPIFSKMAHWSNK
+>>GT28_SCHJA GLUTATHIONE S-TRANSFERASE 28 KD (EC 2.5.1.18
+; fa_initn: 190
+; fa_init1: 97
+; fa_opt: 169
+; fa_z-score: 217.9
+; fa_expect: 1.1e-05
+; sw_score: 169
+; sw_ident: 0.277
+; sw_overlap: 228
+>GT8.7  ..
+; sq_len: 217
+; sq_type: p
+; al_start: 4
+; al_stop: 180
+; al_display_start: 1
+PMILGYWNVRGLTHPIRMLLEYTDSSYDEKRYTMGDAPDFDRSQWLNEKF
+KLGLDFPNLPY--LID--GSHK-ITQSNAILRYLARKHHLDGETEEERIR
+ADIVENQVMDTRMQLIMLCYNPDFEKQK--PEFLK-TIPEKMKLYSEFLG
+KRP--WFAGDKVTYVDFLAYDILDQYRMFEPKCLDA-FPNLRDFLARFEG
+LKKISAYMKSSRYIATPIFSKMAHWSNK
+>GT28_SCHJA ..
+; sq_len: 206
+; sq_type: p
+; al_start: 3
+; al_stop: 180
+; al_display_start: 1
+-VKLIYFNGRGRAEPIRMILVAAGVEFEDERIEFQDWP----------KI
+KPTIPGGRLPIVKITDKRGDVKTMSESLAIARFIARKHNMMGDTDDEYYI
+IEKMIGQVEDVESEYHKTLIKPPEEKEKISKEILNGKVPILLQAICETLK
+ESTGNLTVGDKVTLADVVLIASIDHITDLDKEFLTGKYPEIHKHRKHLLA
+TSPKLAKYLSERHATAF
+>>GT2_DROME GLUTATHIONE S-TRANSFERASE 2 (EC 2.5.1.18).
+; fa_initn: 124
+; fa_init1: 124
+; fa_opt: 164
+; fa_z-score: 210.1
+; fa_expect: 2.9e-05
+; sw_score: 164
+; sw_ident: 0.248
+; sw_overlap: 251
+>GT8.7  ..
+; sq_len: 217
+; sq_type: p
+; al_start: 4
+; al_stop: 198
+; al_display_start: 1
+---------------------------PMILGYWNVRGLTHPIRMLLEYT
+DSSYDEKRYTMGDAPDFDRSQWLNEKFKLGLDFPNLPYL-IDGSHKITQS
+NAILRYLARKHHLDGETEEERIRADIVENQVMDTRMQLIMLCYNPDFEKQ
+KPEFLKTIPEKMKLYSEFLGKR-----PWFAGDKVTYVDFLAYDILDQYR
+-MFEPKCLDAFPNLRDFLARFEGLKKISAYMKSSRYIATPIFSKMAHWSN
+K
+>GT2_DROME ..
+; sq_len: 247
+; sq_type: p
+; al_start: 52
+; al_stop: 240
+; al_display_start: 22
+PPAEGAEGAVEGGEAAPPAEPAEPIKHSYTLFYFNVKALPSPC------A
+TCSDGNQEYE--DVAHPRRVPALKPTMPMG----QMPVLEVDGK-RVHQS
+ISMARFLAKTVGLCGATPWEDLQIDIVVDTINDFRLKIAVVSYEPEDEIK
+EKKLVTLNAEVIPFYLEKLEQTVKDNDGHLALGKLTWADVYFAGITDYMN
+YMVKRDLLEPYPAVRGVVDAVNALEPIKAWIEKRPVTEV
+
+
+Note that the parseable output starts with ">>>" and that each
+alignment record starts with ">>" while each aligned sequence record
+starts with ">"
+
+All parameters produced by the fasta package will be of the form:
+
+	; xx_yyyyy
+
+In this version, we have xx:
+
+	pg - program parameters (name, version, matrix)
+	fa - fasta scores, expect values, etc.
+	sw - Smith-Waterman scores, expect values.
+	sq - sequence length, type
+	al - alignment start, stop, display_offset
+	
+Other FASTA distributors may choose to add additional fields.  If they
+do, they should use a tag with more than two characters, e.g.:
+
+	ebi_access: 
+or
+	gcg_?????
+
+The FASTA tags will be limited to two characters followed by a "_".
+
+All of the output parameters correspond to values that are presented
+in other FASTA output formats, with the exception of the "al_"
+parameters.
+
+al_start gives the location of the alignment start in the
+	original sequence
+
+al_stop gives the location of the end of the alignment in the
+	original sequence
+
+al_display_start 
+	gives the location of the first displayed amino acid residue
+	in the original sequence.  The -m 10 alignments are the same
+	as those produced in the other modes. In particular,
+	FASTA/SSEARCH provide some context for the alignment; if the
+	"-a" option is not used, FASTA/SSEARCH will try to provide
+	about 30 residues on either side of the actual local
+	alignment, if alignment is in the middle of one or the other
+	sequence.  If the begining of the query sequence aligns with
+	the 10'th residue of the library sequence, then the query
+	sequence will be padded with ten leading "-" to produce the
+	alignment.  The leading '-' are a formatting convenience only;
+	they are not considered in the numbering system for
+	al_display_start, al_start, or al_stop.
+	
+	Thus:
+	    
+	>GT8.7  ..
+	; sq_len: 217
+	; sq_type: p
+	; al_start: 3
+	; al_stop: 180
+	; al_display_start: 1
+	---PMILGYWNVRGLTHPIRMLLEYTDSSYDEKRYTMGDAPDFDRSQWLN
+	EKFKLGLDFPNLPYLIDGSHKITQSNAILRYLARKHH---LDGETEEERI
+	RADIVENQVMDTRMQLIMLCYNPDFEKQKPEFLKTIPEKMKLYSEFLGKR
+	PWFAGDKVTYVDFLAYDILDQYRMFEPKCLDA------FPNLRDFLARFE
+	GLKKISAYMKSSRYIATPIFSKMAHWSNK
+	>ARP2_TOBAC ..
+	; sq_len: 223
+	; sq_type: p
+	; al_start: 6
+	; al_stop: 181
+	; al_display_start: 1
+	MAEVKLLGFW-YSPFSHRVEWALKIKGVKYE---YIEEDRD--NKSSLLL
+	QSNPV---YKKVPVLIHNGKPIVESMIILEYIDETFEGPSILPKDPYDRA
+	LARFWAKFLDDKVAAVVNTFFRKGEEQEKGK--EEVYEMLKVLDNELKDK
+	KFFAGDKFGFADIAANLVGFWLGVFEEGYGDVLVKSEKFPNFSKWRDEYI
+	NCSQVNESLPPRDELLAFFRARFQAVVASRSAPK
+
+ 	Says that to align the two sequences, the first 'P' of GT8.7 must
+	line up with the first 'V' (residue 4) in ARP2_TOBAC but that
+	the actual best local alignment starts with the first 'I' in
+	GT8.7 and the first 'L' in ARP2_TOBAC.
+

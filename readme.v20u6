@@ -1,0 +1,92 @@
+** Changes with release 20u67 - May, 1999
+
+Corrected serious problem with fastx alignments.
+
+** Changes with release 20u66 - September, 1998
+
+Made plalign, plfasta, psgrease, to be used with WWW pages.
+
+plalign and plfasta now generate postscript graphics, rather
+than tektronix graphics.  
+
+psgrease makes postscript Kyte-Doolittle plots.
+
+Provide various *.htm and *.cgi files to implement WWW pages for
+lalign, plalign, grease, chofas, garnier.
+
+Updated grease (tgrease), chofas, and garnier for consistent
+user interface.
+
+** Changes with release 20u65 - May 1998
+
+Various minor bug-tweeks to the fastx function, faatran.c, and other
+programs associated with fastx.
+
+** Changes with release 20u64 - May, 1998
+
+Programs have been modified to accept query sequences from STDIN for
+WWW interfaces.  prss, prdf, lalign, and plalign should accept input
+from STDIN. This makes it relatively easy to set up a prss WWW site.
+
+The translation routine used by FASTX has been modified to translate
+ambiguous nucleotides as 'X'.
+
+Problems with specifying gap penalties with DNA sequences have been
+corrected in prss.
+
+**Changes with release 20u6 - August 1996
+
+Another new program - TFASTX - compares a protein sequence to a
+translated, potenitally frameshifted, DNA library.  TFASTX is a
+substantial improvement over TFASTA, although TFASTX is slower.
+
+The LALIGN/PLALIGN family now includes FLALIGN, which will write out
+alignment plots in GCG's Figure format.
+
+Mac - version now uses System7 Standard File routines.
+
+BLOSUM62 support finally included.
+
+** September, 1996
+
+Fixed another bug in fastx/tfastx.
+
+** September, 1996
+
+Fixed problem with query subsequence selection.
+
+Fixed problem with selectbestz().
+
+** September 23, 1996
+
+Fixed problem with in -m=10 Smith-Waterman alignments pointed
+out and corrected by Erik Wallen (erikw@biokemi.su.se).
+
+**Changes with release 20u61 - November, 1996
+
+Made corrections to fffasta.c, nxgetaa.c to support alternative
+protein scoring matrices with fastx.
+
+**Changes with release 20u62 - December, 1996
+
+A fix to nxgetaa.c to allow -i with fastx (bug caused by 20u61
+changes).
+
+**Changes with release 20u63 - December, 1996
+
+Corrected some problems with lfasta using -m 10 (parseable) output.
+
+**Changes with release 20u64 - September, 1997
+
+Modified faatran.c so that fastx searches with many "X"'s are
+translated to 'X', not 'K'.
+
+Added -m 5 (MARKX), which combines -m 0 and -m 4.
+
+Corrected problem with lalign/plalign/flalign and
+lfasta/plfasta/flfasta when reverse complemented DNA sequences were
+compared to the same file.
+
+
+Bill Pearson
+wrp@virginia.edu

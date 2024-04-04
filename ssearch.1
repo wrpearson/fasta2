@@ -1,0 +1,218 @@
+.TH SSEARCH 1 local
+.SH NAME
+ssearch \- scan a protein or DNA sequence library for similar sequences
+
+.SH SYNOPSIS
+.B ssearch
+[-a -b # -d # -E # -f # -g # -h -i -l
+.I FASTLIBS
+\& -L -r
+.I STATFILE
+-m # -O filename -Q -s
+.I SMATRIX
+-w # -z
+] query-sequence-file library-file
+
+.B ssearch
+[-QabdEfghilmOrswz] query-file @library-name-file
+
+.B ssearch
+[-QabdEfghilmOrswz] query-file "%PRMVI"
+
+.B ssearch
+[-aEfghilmrsw] \- interactive mode
+
+.SH DESCRIPTION
+.B ssearch
+compares a protein or DNA sequence to all of the entries in
+a sequence library using the rigorous Smith-Waterman algorithm (Smith
+and Waterman, J. Mol. Biol. (1983) 147:195-197.  For example,
+.B ssearch
+can compare a protein sequence to all of the sequences in the NBRF
+PIR protein sequence database.
+.B ssearch
+will automatically decide whether the query sequence is DNA or protein by
+reading the query sequence as protein and determining whether the
+`amino-acid composition' is more than 85% A+C+G+T.
+The program can be invoked either with command line
+arguments or in interactive mode.
+.B ssearch
+compares a query sequence to a sequence library which consists
+of sequence data interspersed with comments, see below.
+The
+.B fasta
+programs, including
+.B ssearch\c
+\&, use a standard text format sequence file.  Lines beginning with
+'>' or ';' are considered comments and ignored; sequences can be upper
+or lower case, blanks,tabs and unrecognizable characters are ignored.
+.B ssearch
+expects sequences to use the single letter amino acid codes, see
+.B protcodes(1)
+\&.
+Library files for ssearch should have the form shown below.
+.SH OPTIONS
+.PP
+.B ssearch
+can be directed to change the scoring matrix, search parameters,
+output format, and default search directories by entering options on
+the command line (preceeded by a `\-'). All of the
+options should preceed the file name and ktup arguments). Alternately,
+these options can be changed by setting environment variables.  The
+options and environment variables are:
+.TP
+\-a
+.B (SHOWALL)
+Modifies the display of the two sequences in
+alignments. Normally, both sequences are shown only where they
+overlap (SHOWALL=0); If \-a or the environment variable SHOWALL = 1,
+both sequences are shown in their entirety.
+.TP
+\-b #
+The number of similarity scores to be shown when the
+.B -Q
+option is used.  This value is usually calculated based on the
+actual scores.
+.TP
+\-d #
+The number of alignments to be shown.  Normally,
+.B ssearch
+shows the same number of alignments as similarity scores.  By using
+.B ssearch -Q -b 
+200
+.B -d
+50, one would see the top scoring 200 sequences and alignments for the
+50 best scores.
+.TP
+\-E #
+The expectation value threshold for displaying similarity scores and
+sequence alignments.
+.B fasta -Q -E
+2.0 would show all library sequences with scores expected to occur no
+more than 2 times by chance in a search of the library.
+.TP
+\-f #
+Penalty for the first residue in a gap (-12 by default).
+.TP
+\-g #
+Penalty for additional residues in a gap (-2 by default).
+.TP
+\-h
+Do not display histogram of similarity scores.
+.TP
+\-l file
+.B (FASTLIBS)
+The name of the library menu file.  Normally this will be determined
+by the environment variable
+.B FASTLIBS\c
+\&.  However, a library menu file can also be specified with
+.B \-l\c
+\&.
+.TP
+\-L
+display more information about the library sequence in the alignment.
+.TP
+\-m #
+.B (MARKX)
+=0,1,2,3. Alternate display of matches and mismatches in
+alignments. MARKX=0 uses ":","."," ", for identities, consevative
+replacements, and non-conservative replacements, respectively. MARKX=1
+uses " ","x", and "X".  MARKX=2 does not show the second sequence, but
+uses the second alignment line to display matches with a "."  for
+identity, or with the mismatched residue for mismatches.  MARKX=2 is
+useful for aligning large numbers of similar sequences.  MARKX=3
+writes out a file of library sequences in FASTA format.  MARKX=3
+should always be used with the "SHOWALL" (-a) option, but this does not
+completely ensure that all of the sequences output will be aligned.
+.TP
+\-O filename
+Sends copy of results to "filename".
+.TP
+\-Q Quiet option.  This allows ssearch to search a database and report
+the results without asking any questions. ssearch -Q file library >
+output can be put in the background or run at a later time with the
+unix 'at' command.  The number of similarity scores and alignments
+displayed with the
+.B -Q
+option can be modified with the
+.B -b
+(scores) and
+.B -d
+(alignments) options.
+.TP
+\-r
+.I STATFILE
+Causes
+.B ssearch
+to write out the sequence identifier, superfamily number (if available),
+and similarity scores to
+.I STATFILE
+for every sequence in the library.  These results are not sorted.
+.TP
+\-s str
+.B (SMATRIX)
+the filename of an alternative scoring matrix file.  For protein
+sequences, BLOSUM50 is used by default; PAM250 can be used with the
+command line option
+.B -s 250\c
+\&.
+.TP
+\-w #
+.B (LINLEN)
+output line length for sequence alignments.  (normally 60,
+can be set up to 200).
+.TP
+\-z
+Do not do statistical significance calculation.
+.SH EXAMPLES
+.TP
+(1)
+.B ssearch
+musplfm.aa $AABANK
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the complete
+PIR protein sequence library.  This is extremely slow and should
+almost never be done.
+.B ssearch
+is designed to search very small libraries of sequences.
+.nf
+.in +5n
+
+>LCBO bovine preprolactin
+WILLLSQ ...
+>LCHU human ...
+\&...
+.in +0n
+
+.fi
+.TP
+(2)
+.B ssearch
+-a -w 80 musplfm.aa lcbo.aa
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the sequences
+in the file lcbo.aa using
+.I ktup
+\= 1.  Show both sequences in their entirety, with 80 residues on
+each output line.
+.TP
+(3)
+.B ssearch
+.PP
+Run the
+.B ssearch
+program in interactive mode.  The program will prompt for
+the file name for the query sequence, list alternative libraries
+to be seached (if FASTLIBS is set), and prompt for the 
+.I ktup.
+.PP
+You can use your own sequence files for
+.B ssearch\c
+\&, just be certain to put a '>' and comment as the first line
+before the sequence.
+.SH "SEE ALSO"
+rss(1), align(1), fasta(1), rdf2(1),protcodes(5), dnacodes(5)
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU

@@ -1,0 +1,34 @@
+** May, 2005,  21u07 (lalign.c)
+
+Modify the code that checks for identical sequences to not assume
+sequences are identical just because the filenames are.  They may
+be different because of sub-setting.
+
+Add -I option to show identical alignment.
+
+Update lalign.1 documentation.
+
+** April, 2004, 21u06 (lalign2.c)
+
+Fix problem reading external scoring matrix files.  The file
+was not read, and then sequences were not read properly.
+
+Incorporate GAP_OPEN gap matrix options.
+
+Changes to allow G:U RNA base matches.
+
+** March, 2000, 21u02 (lalign.c) 
+
+Added '-N length' option to limit query, library sequences to
+"length".  Corrected problems with sequence numbering when
+subsequences were specified.
+
+Modifications to nrand.c to keep more bits and return random numbers
+from 0..n-1.  Use "nrandom.c" rather than nrand.c if random() is
+available.
+
+Fixes to shuffling routines in randlib.c.
+
+** November, 2003
+
+Add Blosum80 matrix to lalign.c, upam.gbl.

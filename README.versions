@@ -1,0 +1,68 @@
+
+May 13, 1997
+
+Version overview
+
+Currently, the fasta2u65.shar.Z is the latest complete fasta package,
+and it has a complete set of searching programs (fasta, ssearch,
+fastx, etc).  However, the searching programs are more in a maintenance
+mode, bug fixes only.
+
+The fasta3 series, which has ONLY the searching programs, has the
+latest versions of the algorithms and statistical methods.  fasta3
+also runs the exact same functions threaded (fasta3, fasta3_t) and in
+parallel using PVM.
+
+Here is a list of the programs, and where they can be found:
+
+program		fasta2		fasta3			replaced by
+
+fasta		yes		fasta3, fasta3_t
+
+ssearch		yes		ssearch3, ssearch3_t
+
+tfasta		yes		tfasta3, tfasta3_t	(tfastx3 preferred)
+
+fastx		yes		fastx3, fastx3_t
+
+tfastx		yes		tfastx3, tfastx3_t
+
+rdf2 (obsolete)	no		no			prdf2
+
+rss  (obsolete)	no		no			prss
+
+prdf2		yes		no
+
+prss		yes		no
+
+lfasta		yes		no
+
+lalign		yes		no
+
+plalign		yes		no
+
+flalign		yes		no
+
+align		yes		no
+
+align0		yes		no
+
+randseq		yes		no
+
+crandseq	yes		no
+
+aacomp		yes		no
+
+bestscor	yes		no
+
+fromgb		yes		no
+
+grease		yes		no
+
+tgrease		yes		no
+
+garnier		yes		no
+
+zs_exp		yes		no
+
+

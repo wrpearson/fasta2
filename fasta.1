@@ -1,0 +1,492 @@
+.TH FASTA/TFASTA/FASTX/TFASTXv2.0u 1 local
+.SH NAME
+fasta \- scan a protein or DNA sequence library for similar sequences
+
+tfasta \- compare a protein sequence to a DNA sequence
+library, translating the DNA sequence library `on-the-fly'.
+
+lfasta \- compare two protein or DNA sequences for local similarity and show the local sequence alignments
+
+plfasta \- compare two sequences for local similarity and plot the local sequence alignments
+
+.SH SYNOPSIS
+.B fasta
+[-a -A -b # -c # -d # \c
+\& -E # -f # -g # -k # -l file -L
+.I FASTLIBS
+\& -r
+.I STATFILE
+-m # -o -O file -p # -Q -s
+.I SMATRIX
+-w # -x "# #" -y # -z -1 ] query-sequence-file library-file [
+.I ktup
+]
+
+.B fasta
+[-QaAbcdEfgHiklmnoOprswxyz] query-file @library-name-file
+
+.B fasta
+[-QaAbcdEfgHiklmnoOprswxyz] query-file "%PRMVI"
+
+.B fasta
+[-aAbcdEgHlmnoOprswyx] \- interactive mode
+
+.B fastx
+[-aAbcdEfghHlmnoOprswyx] DNA-query-file protein-library [
+.I ktup
+]
+
+.B tfasta
+[-aAbcdEfgkmoOprswy3] protein-query-file DNA-library [
+.I ktup
+]
+
+.B tfastx
+[-abcdEfghHikmoOprswy3] protein-query-file DNA-library [
+.I ktup
+]
+
+.B lfasta
+[-afgmnpswx] sequence-file-1 sequence-file-2 [
+.I ktup
+]
+
+.B plfasta
+[-afgkmnpsxv] sequence-file-1 sequence-file-2 [
+.I ktup
+]
+
+.SH DESCRIPTION
+.B fasta
+is used to compare a protein or DNA sequence to all of the entries in
+a sequence library.  For example,
+.B fasta
+can compare a protein sequence to all of the sequences in the NBRF
+PIR protein sequence database.
+.B fasta
+will automatically decide whether the query sequence is DNA or protein by
+reading the query sequence as protein and determining whether the
+`amino-acid composition' is more than 85% A+C+G+T.
+.B fasta
+uses an improved version of the rapid sequence comparison algorithm
+described by Lipman and Pearson (Science, (1985) 227:1427) that is
+described in Pearson and Lipman, Proc. Natl. Acad. USA, (1988) 85:2444.
+The program can be invoked either with command line arguments or in
+interactive mode.  The optional third argument,
+.I ktup
+sets the sensitivity and speed of the search.  If
+.I ktup=2,
+similar regions in the two sequences being compared are found by
+looking at pairs of aligned residues; if
+.I ktup=1,
+single aligned amino acids are examined.
+.I ktup
+can be set to 2 or 1 for protein sequences, or from 1 to 6 for DNA sequences.
+The default if
+.I
+ktup
+is not specified is 2 for proteins and 6 for DNA.
+.PP
+.B fasta
+compares a query sequence to a sequence library which consists
+of sequence data interspersed with comments, see below.  Normally
+.B fasta\c
+\&,
+.B fastx\c
+\&,
+.B tfasta\c
+\&, and 
+.B tfastx
+search the libraries listed in the file pointed to by the environment
+variable
+.B FASTLIBS\c
+\&.
+The format of this file is described in the file FASTA.DOC.
+.B tfasta
+compares a protein sequence to a DNA sequence database, translating
+the DNA sequence library in 6 frames `on-the-fly' (3 frames with the
+\-3 option).  The search uses the standard BLOSUM50 scoring matrix, and
+uses a
+.I ktup=2
+by default.
+.B tfasta
+searches a DNA sequence database in the standard text format
+described below.
+.B tfastx\c
+\&, like
+.B tfasta\c
+\&, compares a protein sequence to a DNA sequence library.  However, 
+.B tfastx
+compares the protein sequence to the forward and reverse three-frame
+translation of the DNA library sequence, allowing for frameshifts.
+.B fastx
+compares a DNA sequence to a protein sequence database, translating
+the DNA sequence in three frames and allowing frameshifts in the
+alignment.
+.B lfasta
+and
+.B plfasta
+programs compare two sequences looking for local sequence
+similarities.  While
+.B fasta\c
+\&,
+.B fastx\c
+\&,
+and
+.B tfasta
+report only the best alignment between the query sequence and the
+library sequence,
+.B lfasta
+and
+.B plfasta
+will report all of the alignments between the two sequences with
+scores greater than a cut-off value.
+.B lfasta
+shows the actual local alignments between the two sequences and their
+scores, while
+.B plfasta
+produces a plot of the alignments that looks similar to a
+`dot-matrix' homology plot.  On Unix\(tm systems,
+.B plfasta
+generates postscript output.
+.PP
+The
+.B fasta
+programs use a standard text format sequence file.  Lines beginning
+with '>' or ';' are considered comments and ignored; sequences can be upper or
+lower case, blanks,tabs and unrecognizable characters are ignored.
+.B fasta
+expects sequences to use the single letter amino acid codes, see
+.B protcodes(1)
+\&.
+Library files for fasta should have the form shown below.
+.SH OPTIONS
+.PP
+.B fasta
+and the other programs can be directed to change the scoring matrix,
+search parameters, output format, and default search directories by
+entering options on the command line (preceeded by a `\-' or `/' for
+MS-DOS). All of the options should preceed the file name and ktup
+arguments). Alternately, these options can be changed by setting
+environment variables.  The options and environment variables are:
+
+.TP
+\-1
+Normally, the top scoring sequences are ranked by the z-score based on
+the 
+.I opt
+score.  To rank sequences by raw scores, use the
+.B -z
+option. With the
+.B -1
+option, sequences are ranked by the z-score based on the
+.I init1
+score. With the
+.TP
+\-a
+.B (SHOWALL)
+Modifies the display of the two sequences in
+alignments. Normally, both sequences are shown only where they
+overlap (SHOWALL=0); If \-a or the environment variable SHOWALL = 1,
+both sequences are shown in their entirety.
+.TP
+\-A
+Force use of unlimited Smith-Waterman alignment for DNA FASTA and
+TFASTA.  By default, the program uses the older (and faster)
+band-limited Smith-Waterman alignment for DNA FASTA and TFASTA
+alignments.
+.TP
+\-b #
+The number of similarity scores to be shown when the
+.B -Q
+option is used.  This value is usually calculated based on the
+actual scores.
+.TP
+\-c #
+.B (OPTCUT)
+The threshold for optimization with the 
+option.  The OPTCUT value
+is normally calculated based on sequence length.
+.TP
+\-d #
+The number of alignments to be shown.  Normally,
+.B fasta
+shows the same number of alignments as similarity scores.  By using
+.B fasta -Q -b 
+200
+.B -d
+50, one would see the top scoring 200 sequences and alignments for the
+50 best scores.
+.TP
+\-E #
+The expectation value threshold for displaying similarity scores and
+sequence alignments.
+.B fasta\c
+\&  -Q -E
+2.0 would show all library sequences with scores expected to occur no
+more than 2 times by chance in a search of the library.
+.TP
+\-f #
+Penalty for the first residue in a gap (-12 by default for fasta with proteins, -16 for DNA).
+.TP
+\-g #
+Penalty for additional residues in a gap (-2 by default for fasta with proteins, -4 for DNA).
+.TP
+\-h #
+(fastx, tfastx only) penalty for a +1 or -1 frameshift.
+.TP
+\-H
+Do not display histogram of similarity scores.
+.TP
+\-i
+(fasta, fastx) search with the reverse-complement of the query DNA sequence.
+(tfastx) search only the reverse complement of the DNA library sequence.
+.TP
+\-k #
+.B (GAPCUT)
+Sets the threshold for joining the initial regions for calculating the
+.B initn
+score.
+.TP
+\-l file
+.B (FASTLIBS)
+The name of the library menu file.  Normally this will be determined
+by the environment variable
+.B FASTLIBS\c
+\&.  However, a library menu file can also be specified with
+.B \-l\c
+\&.
+.TP
+\-L
+display more information about the library sequence in the alignment.
+.TP
+\-m #
+.B (MARKX)
+=0,1,2,3,4,10. Alternate display of matches and mismatches in
+alignments. MARKX=0 uses ":","."," ", for identities, consevative
+replacements, and non-conservative replacements, respectively. MARKX=1
+uses " ","x", and "X".  MARKX=2 does not show the second sequence, but
+uses the second alignment line to display matches with a "."  for
+identity, or with the mismatched residue for mismatches.  MARKX=2 is
+useful for aligning large numbers of similar sequences.  MARKX=3
+writes out a file of library sequences in FASTA format.  MARKX=3
+should always be used with the "SHOWALL" (-a) option, but this does not
+completely ensure that all of the sequences output will be aligned. MARKX=4
+displays a graph of the alignment of the library sequence with repect to the
+query sequence, so that one can identify the regions of the query sequence
+that are conserved. MARKX=10 is used to produce a parseable output format.
+.TP
+\-n
+Forces the query sequence to be treated as a DNA sequence.
+.TP
+\-O filename
+send copy of results to "filename."
+.TP
+\-o 
+Turns off default
+.B fasta
+limited optimization on all of the sequences in the library
+with
+.B initn
+scores greater than
+.B OPTCUT\c
+\&.  This option is now the reverse of previous versions of
+.B fasta\c
+\&.
+.TP
+\-Q
+Quiet option.  This allows fasta and tfasta to search a database and
+report the results without asking any questions. fasta -Q file library > output
+can be put in the background or run at a later time with the unix 'at' command.
+The number of similarity scores and alignments displayed with the
+.B -Q
+option can be modified with the
+.B -b
+(scores) and
+.B -d
+(alignments) options.
+.TP
+\-r
+.I STATFILE
+Causes
+.B fasta
+to write out the sequence identifier, superfamily number (if available),
+and similarity scores to
+.I STATFILE
+for every sequence in the library.  These results are not sorted.
+.TP
+\-s str
+.B (SMATRIX)
+the filename of an alternative scoring matrix file.  For protein
+sequences, BLOSUM50 is used by default; PAM250 can be used with the
+command line option
+.B -s 250\c
+\&.
+.TP
+\-v str
+.B (LINEVAL)
+(plfasta only)
+.B plfasta
+and
+.B pclfasta
+can use up to 4 different line styles to denote the
+scores of local alignments.  The scores that correspond to these
+line styles can be specified with the environment variable
+.B LINVAL\c
+\&, or with the
+.B \-v
+option.  In either case, a string with three numbers separated by
+spaces should be given.  This string must be surrounded by double
+quotation marks.  For example, LINEVAL="200 100 50" tells plfasta
+to use solid lines for local alignments with scores greater than 200,
+long dashed lines for scores between 100 and 200, short dashed lines
+for scores between 50 and 100, and dotted lines for scores less than 50.
+.in +0.5i
+plfasta -v "200 100 50"
+.in -0.5i
+Normally, the values are 200, 100, and 50 for protein sequence comparisons
+and 400, 200, and 100 for DNA sequence comparisons.
+.TP
+\-w #
+.B (LINLEN)
+output line length for sequence alignments.  (normally 60,
+can be set up to 200).
+.TP
+\-x "offset1 offset2"
+Causes fasta/lfasta/plfasta to start numbering the aligned sequences
+starting with offset1 and offset2, rather than 1 and 1.  This is
+particularly useful for showing alignments of promoter regions.
+.TP
+\-y
+Set the band-width used for optimization.  -y 16 is the default
+for protein when ktup=2 and for all DNA alignments. -y 32 is used for
+protein and ktup=1.  For proteins, optimization slows comparison 2-fold
+and is highly recommended.
+.TP
+\-z
+Do not do statistical significance calculation. Results are ranked
+by the unnormalized
+.B opt\c
+\&,
+.B initn\c
+\&,
+or
+.B init1
+score.
+.TP
+\-3
+(tfasta, tfastx) only.  Normally
+.B tfasta
+and
+.B tfastx
+translate sequences in the DNA sequence library in all six frames.
+With the \-3 option, only the three forward frames are searched.
+.SH EXAMPLES
+.TP
+(1)
+.B fasta
+musplfm.aa $AABANK
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the complete
+PIR protein sequence library using
+.I ktup
+\&= 2
+Each "library" sequence (there need only be one) should start with
+a comment line which starts with a '>', e.g.
+.nf
+.in +5n
+
+>LCBO bovine preprolactin
+WILLLSQ ...
+>LCHU human ...
+\&...
+.in +0n
+
+.fi
+.TP
+(2)
+.B fasta
+-a -w 80 musplfm.aa lcbo.aa 1
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the sequences
+in the file lcbo.aa using
+.I ktup
+\= 1.  Show both sequences in their entirety, with 80 residues on
+each output line.
+.TP
+(3)
+.B fasta
+.PP
+Run the
+.B fasta
+program in interactive mode.  The program will prompt for
+the file name for the query sequence, list alternative libraries
+to be seached (if FASTLIBS is set), and prompt for the 
+.I ktup.
+.SH FILES
+.PP
+This version of
+.B
+fasta
+prompts for the library file to be searched from a list of file names
+that are saved in the file pointed to by the environment variable FASTLIBS.
+If FASTLIBS = fastgb.list, then the file fastgb.list might have the entries:
+.in +0.5i
+.nf
+
+NBRF Protein$0P/u/lib/aabank.lib 0
+GB Primate$1P@/u/lib/gpri.nam
+GB Rodent$1R@/u/lib/grod.nam
+GB Mammal$1M@/u/lib/gmammal.nam
+
+.fi
+.in -0.5i
+Each line in this file has 4 fields: (1) The library name, separated from
+the remaining fields by a '$'; (2) A 0 or a 1 indicating protein or DNA
+library respectively; (3) A single letter that will be used to choose the
+library; (4) the location of the library
+file itself (the library file name can contain an optional library format
+specfier.
+.B Fasta
+recognizes the following library formats: 0 - Pearson/FASTA; 1 - Genbank flat file;
+2 - NBRF/PIR Codata; 3 - EMBL/SWISS-PROT; 4 - Intelligenetics; 5 - NBRF/PIR
+VMS); 
+Note that this
+fourth field can contain an 
+.B '@'
+character, which indicates that the library
+file is an indirect library file containing list of library files, one
+per line. An indirect
+library file might have the lines:
+.in +0.5i
+.nf
+</usr/slib/genbank	(the directory for the library files)
+gbpri.seq 1
+gbrod.seq 1
+gbmam.seq 1
+\&...
+gbvrl.seq 1
+\&...
+.fi
+.in -0.5i
+.PP
+You can use your own sequence files for
+.B fasta\c
+\&, just be certain to put a '>' and comment as the first line
+before the sequence.  Only one library file type, the standard NBRF
+library format, is supported by the VAX/VMS programs.
+.B
+lfasta
+and
+.B
+plfasta
+do not required the '>' and comment line.
+.B
+fasta
+does.
+.SH "SEE ALSO"
+rdf2(1),protcodes(5), dnacodes(5)
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU

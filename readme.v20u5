@@ -1,0 +1,56 @@
+
+**Changes with release 20u5 - May 1996
+
+This version of the FASTA package includes FASTX - a program that
+compares a DNA sequence with a protein sequence library by translating
+the DNA sequence in three frames and finding the best match, with
+frame-shifts, between the translated DNA and protein sequence.
+(unlike BLASTX, FASTX only does a three-frame translation.  To search
+all six frames, do a second search with the "-i" option).
+
+The code for aligning a three-frame protein sequence with a normal
+protein sequence was provided by Zheng Zhang and W. Miller of the
+Pennsylvania State University.
+
+A third gap parameter, the frameshifts penalty, is provided with the
+'-h' option.  The default gap penalties are -15 for the first residue
+in a gap, -3 for each additional residue, and -30 for a frameshift.
+
+The '-h' option used to prevent the histogram display, that option is
+now invoked with '-H'.
+
+Much of the FASTX code is new and has not been tested nearly as
+extensively as the other fasta programs. Please inform me of bugs as
+you find them.
+
+================
+**Changes with release 20u51 - June, 1996
+
+Fixes to showalign for SHOWALL.
+
+Fixes to routines that read fasta format files for long DNA sequences.
+
+================
+**Changes with release 20u52 - July, 1996
+
+Fixes to lalign/plalign for setting gap penalties on DNA
+
+Fixes to fastx to correct bug in alignment routine.
+
+================
+**Changes with release 20u53 - July, 1996
+
+Another fix to fastx 
+
+Added flalign, a version of plalign that produces a GCG fig file for
+local aligment graphics.
+
+Increased the size of sequences that can be aligned by lalign to
+120,000 residues with BIGMEM.
+
+First release of Mac version with FASTX.
+
+================
+
+Bill Pearson
+wrp@virginia.edu

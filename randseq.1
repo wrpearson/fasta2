@@ -1,0 +1,45 @@
+.TH RSS 1 local
+.SH NAME
+randseq \- randomly shuffle a protein or DNA sequence
+.SH SYNOPSIS
+.B randseq
+[
+.I -w # -O file
+]
+sequence-file-1
+
+.B randseq
+[-w # -O]
+\- interactive mode
+
+.SH DESCRIPTION
+.B randseq
+produces a shuffled amino acid or DNA sequence with the same length and composition as the input sequence.
+.B randseq
+uses the same shuffling algorithm as
+.B prss
+and
+.B prdf\c
+\&.  Shuffled sequences can be used to evaluate the accuracy of the
+statistical estimates produced by BLAST, FASTA, or SSEARCH.  Searches
+done with a randomly shuffled sequence should have an expectation
+value around 1.0 (BLASTP p-value = 0.63).
+.SH EXAMPLES
+.TP
+.B randseq
+\& -w 20 mgstm1.aa > mgstm1.raa
+.PP
+Shuffle the sequence in "mgstm1.aa" using a local window of length 20
+and send the output to "mgstm1.raa".
+.SH OPTIONS
+.TP
+.B -w #
+use local window for shuffle with window size #.
+.TP
+.B -O file
+send output to file.
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU
+

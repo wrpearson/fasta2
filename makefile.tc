@@ -1,0 +1,203 @@
+# makefile for DOS version of fasta programs
+# copyright (c) 1987 William R. Pearson
+#
+
+#sun (bsd)
+#CC= cc
+#CFLAGS= -O -DBIGMEM -Dstrchr=index
+#LFLAGS= -lm -o
+#NRAND= nrand
+#HZ=60
+
+# MSDOS TURBO C commands
+CC= bcc -mm -w-rvl -w-pro -3 -O
+#CC= bcc32 -WC -w-rvl -w-pro -3 -O
+CFLAGS= -IC:\bc45\include -DFAR_PTR -DALLOCN0 -DMSDOS 
+#CFLAGS= -IC:\bc45\include -DBIGMEM -DALLOCN0 -DMSDOS 
+CL= bcc -mm
+#CL= bcc32 -WC
+LFLAGS= -LC:\bc45\lib
+NRAND= nrand
+HZ=100
+
+.c.obj:
+	$(CC) $(CFLAGS) -c $<
+
+all : fasta.exe tfasta.exe prdf.exe ssearch.exe align.exe align0.exe prss.exe relate.exe lfasta.exe plfasta.exe lalign.exe plalign.exe bestscor.exe grease.exe tgrease.exe garnier.exe fromgb.exe aacomp.exe
+
+fasta.exe : ifastaf.obj pam.obj zgmata.obj f_band.obj l_band.obj g_band.obj llmax.obj scaleswf.obj nxgetaa.obj ndispn.obj time.obj getopt.obj
+	$(CL)  $(LFLAGS) -efasta.exe ifastaf.obj zgmata.obj scaleswf.obj nxgetaa.obj ndispn.obj @fasta.rsp
+
+tfasta.exe : tfasta.obj faatran.obj pam.obj zgmata.obj f_band.obj l_band.obj g_band.obj scaleswf.obj tnxgetaa.obj ndispn.obj time.obj getopt.obj
+	$(CL)  $(LFLAGS) -etfasta.exe tfasta.obj faatran.obj zgmata.obj scaleswf.obj tnxgetaa.obj ndispn.obj @fasta.rsp
+
+ssearch.exe : ssearch.obj pam.obj sgmata.obj llmax.obj scalesws.obj nxgetaa.obj ndispn.obj time.obj getopt.obj 
+	$(CL)  $(LFLAGS) -essearch.exe ssearch.obj sgmata.obj scalesws.obj nxgetaa.obj  ndispn.obj @ssrch.rsp
+
+lfasta.exe : lfasta.obj zlgmata.obj ll_band.obj g_band.obj pam.obj lfgetaa.obj ndispn.obj crck.obj time.obj getopt.obj
+	$(CL)  $(LFLAGS) -elfasta.exe lfasta.obj zlgmata.obj ndispn.obj crck.obj @lfasta.rsp
+
+plfasta.exe : plfasta.obj plgmata.obj ll_band.obj g_band.obj lfgetaa.obj ttdispn.obj pam.obj crck.obj time.obj getopt.obj
+	$(CL) $(LFLAGS) -eplfasta plfasta.obj plgmata.obj ttdispn.obj crck.obj @lfasta.rsp graphics.lib
+
+prdf.exe : prdf.obj pam.obj zgmata.obj f_band.obj $(NRAND).obj lfgetaa.obj getopt.obj time.obj rweibull.obj
+	$(CL)  $(LFLAGS) -eprdf.exe prdf.obj zgmata.obj f_band.obj pam.obj time.obj getopt.obj $(NRAND).obj lfgetaa.obj rweibull.obj
+
+prss.exe : prss.obj pam.obj sgmata.obj $(NRAND).obj lfgetaa.obj time.obj getopt.obj rweibull.obj
+	$(CL) $(LFLAGS) -eprss.exe prss.obj pam.obj sgmata.obj $(NRAND).obj lfgetaa.obj time.obj getopt.obj rweibull.obj
+
+relate.exe : relate.obj pam.obj lfgetaa.obj time.obj
+	$(CL) $(LFLAGS) -erelate.exe relate.obj pam.obj lfgetaa.obj time.obj getopt.obj
+
+align.exe : align.obj pam.obj llmax.obj lfgetaa.obj ndispn.obj time.obj
+	$(CL)  $(LFLAGS) -ealign.exe align.obj pam.obj llmax.obj lfgetaa.obj ndispn.obj time.obj getopt.obj
+
+align0.exe : align.obj pam.obj llmax0.obj lfgetaa.obj ndispn.obj time.obj
+	$(CL)  $(LFLAGS) -ealign0.exe align.obj pam.obj llmax0.obj lfgetaa.obj ndispn.obj time.obj getopt.obj
+
+lalign.exe : lalign.obj pam.obj lsim2.obj lfgetaa.obj ndispn.obj time.obj getopt.obj agstats.obj
+	$(CL) $(LFLAGS) -elalign.exe lalign.obj pam.obj lsim2.obj agstats.obj lfgetaa.obj ndispn.obj time.obj getopt.obj
+
+plalign.exe : plalign.obj pam.obj plsim2.obj lfgetaa.obj psdispn.obj agstats.obj time.obj getopt.obj
+	$(CC)  $(LFLAGS) -eplalign.exe plalign.obj pam.obj plsim2.obj agstats.obj @pll.rsp
+
+lfasta.obj : fffasta.c upam.gbl
+	$(CC)  $(CFLAGS) -DLFASTA -olfasta.obj -c fffasta.c
+
+plfasta.obj : fffasta.c upam.gbl
+	$(CC)  $(CFLAGS) -DLFASTA -DTPLOT -oplfasta.obj -c fffasta.c
+
+ifastaf.obj : fffasta.c upam.gbl
+	$(CC)  $(CFLAGS) -DMAXSAV=10 -oifastaf.obj -c fffasta.c
+
+ssearch.obj : ssearch.c upam.gbl
+	$(CC)  $(CFLAGS) -ossearch.obj -c ssearch.c
+
+tsearch.obj : ssearch.c upam.gbl
+	$(CC)  $(CFLAGS) -DTFASTA -otsearch.obj -c ssearch.c
+
+tfasta.obj : fffasta.c upam.gbl
+	$(CC)  $(CFLAGS) -DTFASTA -DMAXSAV=10 -otfasta.obj -c fffasta.c
+
+prdf.obj : prdf.c upam.gbl
+	$(CC)  $(CFLAGS) -c -DMAXSAV=10 prdf.c
+
+prss.obj : prss.c upam.gbl
+	$(CC)  $(CFLAGS) -c prss.c
+
+align.obj : align.c upam.gbl
+	$(CC) $(CFLAGS) -c align.c
+
+lalign.obj : lalign.c upam.gbl
+
+plalign.obj : lalign.c upam.gbl
+	$(CC) $(CFLAGS) -DTPLOT -oplalign.obj -c lalign.c
+
+lsim.obj   : lsim.c
+
+plsim.obj   : lsim.c
+	$(CC) $(CFLAGS) -DTPLOT -oplsim.obj -c lsim.c
+
+lsim2.obj   : lsim2.c
+
+plsim2.obj   : lsim2.c
+	$(CC) $(CFLAGS) -DTPLOT -oplsim2.obj -c lsim2.c
+
+llmax.obj : llmax.c
+
+llmax0.obj : llmax0.c
+
+faatran.obj : upam.gbl aamap.gbl uascii.gbl
+
+pam.obj : uascii.gbl upam.gbl
+
+zlgmata.obj : zzlgmata.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -DLFASTA -ozlgmata.obj -c zzlgmata.c
+
+sgmata.obj : zzlgmata.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -DSMATCH -osgmata.obj -c zzlgmata.c
+
+plgmata.obj : zzlgmata.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -DLFASTA -DTPLOT -oplgmata.obj -c zzlgmata.c
+
+zgmata.obj : zzlgmata.c  zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -ozgmata.obj -c zzlgmata.c
+
+zggmata.obj : zzlgmata.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -DGLOBAL -ozggmata.obj -c zzlgmata.c
+
+g_band.obj : g_band.c
+
+l_band.obj : l_band.c
+
+ll_band.obj : l_band.c
+	$(CC) $(CFLAGS) -DLFASTA -oll_band.obj -c l_band.c
+
+nxgetaa.obj : nxgetaa.c upam.gbl uascii.gbl altlib.h
+	$(CC) $(CFLAGS) -DSFCHAR=':' -c  nxgetaa.c
+
+lfgetaa.obj : nxgetaa.c upam.gbl uascii.gbl
+	$(CC) $(CFLAGS) -DNOLIB -olfgetaa.obj -c nxgetaa.c
+
+tnxgetaa.obj : nxgetaa.c upam.gbl uascii.gbl
+	$(CC) $(CFLAGS) -DTFASTA -DSFCHAR=':' -otnxgetaa -c nxgetaa.c
+
+ndispn.obj : upam.gbl
+
+ttdispn.obj : upam.gbl
+
+psdispn.obj : ps_dispn.c upam.gbl
+	$(CC) $(CFLAGS) -c -opsdispn.obj ps_dispn.c
+	
+pcldispn.obj : upam.gbl
+
+time.obj : time.c
+	$(CC) $(CFLAGS) -DHZ=$(HZ) -c time.c
+
+grease.exe : grease.obj lfgetaa.obj
+	$(CL) $(LFLAGS) -egrease.exe grease.obj lfgetaa.obj
+
+tgrease.exe : tgrease.obj lfgetaa.obj plotsub.obj
+	$(CL) $(LFLAGS)  -etgrease.exe tgrease.obj lfgetaa.obj plotsub.obj
+
+psgrease.exe : tgrease.obj lfgetaa.obj pspltsub.obj
+	$(CL) $(LFLAGS)  -epsgrease.exe tgrease.obj lfgetaa.obj pspltsub.obj
+
+bestscor.exe : bestscor.obj pam.obj lfgetaa.obj getopt.obj
+	$(CC) $(LFLAGS) bestscor.obj pam.obj lfgetaa.obj getopt.obj
+
+garnier.exe : garnier.obj lfgetaa.obj
+	$(CL) $(LFLAGS) garnier.obj lfgetaa.obj
+
+garnier.obj : garnier.h
+
+findp.exe : findp.obj qsubs.obj
+	$(CL) $(LFLAGS) -efindp findp.obj qsubs.obj
+
+findp.obj : findp.c find.gbl
+
+qsubs.obj : qsubs.c qsubs.h
+
+chofas.exe : chofas.obj lfgetaa.obj
+	$(CC) $(LFLAGS) -echofas.exe chofas.obj lfgetaa.obj
+
+fromgb.exe : fromgb.obj
+	$(CC) $(LFLAGS) -efromgb.exe fromgb.obj
+
+aacomp.exe : aacomp.obj
+	$(CC) $(LFLAGS) -eaacomp.exe aacomp.obj
+
+scaleswf.obj : scalesws.c
+	$(CC) $(CFLAGS) -DFASTA_BEST  -oscaleswf.obj -c scalesws.c
+
+scalesws.obj : scalesws.c
+	$(CC) $(CFLAGS) -oscalesws.obj -c scalesws.c 
+
+f_band.obj : f_band.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -c f_band.c
+
+agstats.obj : ag_stats.c 
+	$(CC) $(CFLAGS) -c -oagstats.obj ag_stats.c
+
+pspltsub.obj : ps_plotsub.c
+	$(CC) $(CFLAGS) -c -opspltsub.obj ps_plotsub.c

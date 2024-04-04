@@ -1,0 +1,49 @@
+
+Minor release notes:
+(Major changes are documented in the readme.v16 file)
+
+October, 1992
+
+	Modified align.c to correctly display alignments with short
+sequence labels.
+
+	Modified nxgetaa.c to strip ^M from pir files on CD-ROM.
+
+November, 1992  -> 16c22
+
+	Corrected urdf.c (rdf2) to use pamfact properly with DNA
+sequence files.
+
+
+December, 1992 -> 16c23
+
+	Added -h option to omit histogram.
+	Made descriptive line a function of line length (-w).
+
+December, 1992 -> 16c24
+
+	Added -e option to scale similarity scores by the ln(n0)/ln(n1)
+	where n0, n1 are the lengths of the query and library sequence.
+
+May, 1993 (rdf2,rss) -> 16c1
+
+	Fixed bug in local shuffle routine that allowed shuffle to
+	become global.
+
+August, 1993 (fasta,tfasta) -> 16c30
+
+	Added support for NCBI Search-CD, BLAST format libraries.
+	For DNA library sequences with ambiguity codes, the scores will
+	be slightly different from the correct score, because the default
+	FASTA scoring matrix gives a score of '0' to an 'N' mismatch,
+	but '-3' to a A-T mismatch.  Since FASTA does not read the
+	original ambiguous file, it does not see the "correct" sequence.
+	Sequences with ambiguity codes are marked with an '*' at the
+	start of the locus name, e.g. *BOVPRL.
+
+
+November, 1993 -> 16c31a
+
+	Changes to nxgetaa.c to accomodate changes in embl library format.
+	Changes to ncbl_lib.c to work on DNA sequences
+

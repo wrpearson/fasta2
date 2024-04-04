@@ -1,0 +1,117 @@
+.TH RDF2 1 local
+.SH NAME
+prdf \- test a protein sequence similarity for significance
+.SH SYNOPSIS
+.B prdf
+\&[-f # -g # -h -k # -O filename -s SMATRIX
+.I -w window-size
+]
+sequence-file-1 sequence-file-2 [
+.I ktup
+] [
+.I #-of-shuffles
+]
+
+.B prdf
+[-fghks]
+\- interactive mode
+
+.SH DESCRIPTION
+.B prdf
+is used to evaluate the significance of a protein sequence similarity
+score by comparing two sequences and calculating initial and optimized
+similarity scores, and then repeatedly shuffling the second sequence,
+and calculating the initial and optimized scores.  Extreme value
+distributions are then fit to each of the three distributions of
+scores.  The characteristic parameters of the extreme value
+distribution are then used to estimate the probability that each of
+the unshuffled sequence scores would be obtained by chance in one
+sequence, or in a number of sequences equal to the number of shuffles.
+This program is derived from rdf2, which was described by Pearson and
+Lipman, PNAS (1988) 85:2444-2448, and Pearson (Meth. Enz.  183:63-98).
+Use of the extreme value distribution for estimating the probabilities
+of similarity scores was described by Altshul and Karlin, PNAS (1990)
+87:2264-2268.  The 'z-values' calculated by rdf2 are not as
+informative as the P-values and expectations calculated by prdf.
+.PP
+.B prdf
+also allows a more sophisticated shuffling method: residues can be shuffled
+within a local window, so that the order of residues 1-10, 11-20, etc,
+is destroyed but a residue in the first 10 is never swapped with a residue
+outside the first ten, and so on for each local window.
+.SH EXAMPLES
+.TP
+(1)
+.B prdf
+-w 10 musplfm.aa lcbo.aa 1 250
+.PP
+Compare the amino acid sequence in the file musplfm.aa with that
+in lcbo.aa, then shuffle lcbo.aa 250 times using a local shuffle with
+a window of 10 and calculate initial
+and optimized similarity scores using Ktup = 1.  Report the significance of the
+unshuffled musplfm/lcbo comparison scores with respect to the shuffled
+scores.
+.TP
+(2)
+.B prdf
+musplfm.aa lcbo.aa 2
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the sequences
+in the file lcbo.aa using
+.I ktup
+\= 2.
+.TP
+(3)
+.B prdf
+.PP
+Run prdf in interactive mode.  The program will prompt for
+the file name of the two query sequence files, the 
+.I ktup,
+and the number of shuffles to be used.  100 shuffles are calculated by
+default; 250 - 500 shuffles should provide more accurate probability
+estimates.
+.SH OPTIONS
+.PP
+.B prss
+can be directed to change the scoring matrix, gap penalties, and
+shuffle parameters by entering options on the command line (preceeded
+by a `\-'). All of the options should preceed the file names number of
+shuffles.
+.TP
+\-f #
+Penalty for the first residue in a gap (-12 by default).
+.TP
+\-g #
+Penalty for additional residues in a gap (-2 by default).
+.TP
+\-h
+Do not display histogram of similarity scores.
+.TP
+\-k #
+.B (GAPCUT)
+Sets the threshold for joining the initial regions for calculating the
+.B initn
+score.
+.TP
+\-Q -q
+"quiet" - do not prompt for filename.
+.TP
+\-O filename
+send copy of results to "filename."
+.TP
+\-s str
+.B (SMATRIX)
+the filename of an alternative scoring matrix file.  For protein
+sequences, BLOSUM50 is used by default; PAM250 can be used with the
+command line option
+.B -s 250\c
+(or with -s pam250.mat).
+.SH "SEE ALSO"
+fasta(1),lfasta(1),prss(1),protcodes(5)
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU
+.PP
+The curve fitting routines in rweibull.c were provided by Phil Green,
+Washington U., St. Louis.

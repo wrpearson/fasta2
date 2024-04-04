@@ -1,0 +1,136 @@
+.TH ALIGN 1 local
+.SH NAME
+.B align
+\- compute the global alignment of two protein or DNA sequences
+
+.B align0
+\- compute the global alignment of two protein or DNA sequences
+without penalizing for end-gaps
+
+
+.SH SYNOPSIS
+.B align
+[ -f # -g # -O filename  -m # -s 
+.I SMATRIX
+-w # ] sequence-file-1 sequence-file-2
+
+.SH DESCRIPTION
+.B align
+produces an optimal global alignment between two protein or DNA sequences.
+.B align
+will automatically decide whether the query sequence is DNA or protein by
+reading the query sequence as protein and determining whether the
+`amino-acid composition' is more than 85% A+C+G+T.
+.B align
+uses a modification of the algorithm described by E. Myers and W. Miller
+in  "Optimal Alignments in Linear Space" CABIOS (1988) 4:11-17.
+The program can be invoked either with command line arguments or in
+interactive mode.
+.PP
+.B align
+weights end gaps, so that an alignment of the form
+.nf
+.in +5
+\fC-----MACF
+SRTKIMACF\fP
+.in -5
+will have a higher score than:
+.in +5
+\fCMACF
+MACF\fP
+.in -5
+.fi
+.B align0
+uses the same algorithm, but does not weight end gaps.  Sometimes this can
+have surprising effects.
+.PP
+.B align
+and
+.B align0
+use the standard
+.B fasta
+format sequence file.  Lines beginning
+with '>' or ';' are considered comments and ignored; sequences can be upper or
+lower case, blanks,tabs and unrecognizable characters are ignored.
+.B align
+expects sequences to use the single letter amino acid codes, see
+.B protcodes(1)
+\&.
+.SH OPTIONS
+.PP
+.B align
+can be directed to change the scoring matrix and
+output format by
+entering options on the command line (preceeded by a `\-' or `/' for
+MS-DOS). All of the options should preceed the file name
+arguments. Alternately, these options can be changed by setting
+environment variables.  The options and environment variables are:
+.TP
+\-f #
+Penalty for the first residue in a gap (-12 by default).
+.TP
+\-g #
+Penalty for additional residues in a gap (-2 by default).
+.TP
+\-O filename
+Sends copy of results to "filename".
+.TP
+\-m #
+.B (MARKX)
+=1,2,3. Alternate display of matches and mismatches in
+alignments. MARKX=1 uses ":",".","\ ", for identities, consevative
+replacements, and non-conservative replacements, respectively. MARKX=2
+uses "\ ","x", and "X".  MARKX=3 does not show the second sequence, but
+uses the second alignment line to display matches with a "."  for
+identity, or with the mismatched residue for mismatches.  MARKX=3 is
+useful for aligning large numbers of similar sequences.
+.TP
+\-s str
+.B (SMATRIX)
+the filename of an alternative scoring matrix file or "250" to use the
+PAM250 matrix.
+.TP
+\-w #
+.B (LINLEN)
+output line length for sequence alignments.  (normally 60,
+can be set up to 200).
+.SH EXAMPLES
+.TP
+(1)
+.B align
+musplfm.aa lcbo.aa
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the amino acid
+sequence in the file lcbo.aa Each sequence should be in the form:
+.nf
+.in +5
+>LCBO bovine preprolactin
+WILLLSQ ...
+.in -5
+
+.fi
+.TP
+(2)
+.B align
+\&-w 80 musplfm.aa lcbo.aa > musplfm.aln
+.PP
+Compare the amino acid sequence in the file musplfm.aa with the sequences
+in the file lcbo.aa
+Show both sequences with 80 residues on
+each output line and write the output to the file
+.B musplfm.aln\c
+\&.
+.TP
+(3)
+.B align
+.PP
+Run the
+.B align
+program in interactive mode.  The program will prompt for
+the file name for the first sequence and the second sequence.
+.SH "SEE ALSO"
+rdf2(1),protcodes(5), dnacodes(5)
+.SH AUTHOR
+Bill Pearson
+.br
+wrp@virginia.EDU
