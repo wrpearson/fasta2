@@ -76,16 +76,19 @@ struct beststr {
 	};
 #endif
 
-float find_zm(), find_z();
+float find_zm(int score, int n1), find_z(int score, int n1);
 
-process_hist(n0,bptr, nbest)
-     int n0;
+void inithist(), inithistz(int), addhist(int s, int length), addhistz(float zs, int length), prune_hist();
+void fit_llen(), fit_llens();
+
+void process_hist(
+	     int n0,
 #ifndef FAR_PTR
-     struct beststr **bptr;
+	     struct beststr **bptr,
 #else
-     struct beststr huge * huge * bptr;
+	     struct beststr huge * huge * bptr,
 #endif
-     int nbest;
+	     int nbest)
 {
   int i, j, llen, hscore;
   int n_trimmed;
@@ -131,7 +134,7 @@ process_hist(n0,bptr, nbest)
 }
 
 
-alloc_hist()
+void alloc_hist()
 {
   if (llen_hist == NULL) {
     llen_hist = (int *)calloc((size_t)(max_llen+1),sizeof(int));
@@ -141,7 +144,7 @@ alloc_hist()
   }
 }
   
-free_hist()
+void free_hist()
 {
   if (llen_hist != NULL) {
     free(score_var);
@@ -152,7 +155,7 @@ free_hist()
   }
 }
 
-inithist()
+void inithist()
 {
   int i;
 
@@ -174,8 +177,7 @@ inithist()
   total_db_length = 0;
 }
 
-addhist(score, length)
-     int score, length;
+void addhist(int score, int length)
 {
   int llen; 
 
@@ -205,8 +207,7 @@ addhist(score, length)
 /* histogram will go from z-scores of 20 .. 100 with mean 50 and z=10 */
 
 
-inithistz(mh)
-     int mh;
+void inithistz(int mh)
 {
   min_hist = 20;
   max_hist = 120;
@@ -223,9 +224,7 @@ inithistz(mh)
   }
 }
 
-addhistz(zs,length)
-     float zs;
-     int length;
+void addhistz(float zs, int length)
 {
   int ih, zi;
 
@@ -246,8 +245,7 @@ addhistz(zs,length)
   hist[ih]++;
 }
 
-prune_hist(score, length)
-     int score, length;
+void prune_hist(int score, int length)
 {
   int llen;
 
@@ -268,7 +266,7 @@ prune_hist(score, length)
 }  
  
 
-fit_llen()
+void fit_llen()
 {
   int j;
   long n, cell_size;
@@ -432,7 +430,7 @@ fit_llen()
 */
 }
 
-fit_llens()
+void fit_llens()
 {
   int j;
   long n, cell_size;
@@ -564,8 +562,7 @@ fit_llens()
   fit_llen();
 }
 
-float find_z(score, length)
-     int score, length;
+float find_z(int score, int length)
 {
   float log_len, var, z;
   
@@ -577,8 +574,7 @@ float find_z(score, length)
   return (50.0 + 10.0*z);
 }
 
-float find_zm(score, length)
-     int score, length;
+float find_zm(int score, int length)
 {
   float log_len, var, z;
   
@@ -606,10 +602,8 @@ float z_to_E(zs)
   return (float)num_db_entries * (e > .01 ? 1.0 - exp(-e) : e);
 }
 
-float zs_to_E(zs,n1) /* computes E-value for a given z value,
-		    assuming extreme value distribution */
-     float zs;
-     int n1;
+float zs_to_E(float zs,int n1) /* computes E-value for a given z value,
+				  assuming extreme value distribution */
 {
   float e, z, k;
 
@@ -647,7 +641,7 @@ float zs_to_Ec(zs) /* computes 1.0 - E value for a given z value,
 1.000857, so should be adequate approximation to z-score distribution when
 behavior is "local" */ 
 
-vsort(v,s,n)
+void vsort(v,s,n)
 	float *v; int *s, n;
 {
   int gap, i, j;
@@ -663,7 +657,7 @@ vsort(v,s,n)
       }
 }
 
-calc_ks()
+void calc_ks()
 {
   int i, cum_hl;
   float x_tmp, cur_e, f_int;

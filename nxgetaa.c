@@ -110,6 +110,7 @@ static char o_line[256];
 void closelib();
 void revcomp(char *, int);
 
+int
 getseq(filen,seq,maxs,dnaseq)
 	char *filen, *seq;
 	int maxs, *dnaseq;
@@ -237,6 +238,7 @@ getseq(filen,seq,maxs,dnaseq)
 	return n;
 	}
 
+int
 getntseq(filen,seq,maxs,dnaseq)
 	char *filen, *seq;
 	int maxs, *dnaseq;
@@ -312,6 +314,7 @@ getntseq(filen,seq,maxs,dnaseq)
 	return n;
 	}
 
+int
 gettitle(filen,title,len)
 	char *filen, *title; int len;
 {
@@ -442,7 +445,7 @@ int sfnum=0;		/* superfamily number from types 0 and 5 */
 
 /* a file name for openlib may now include a library type suffix */
 
-openlib(lname,libenv)
+int openlib(lname,libenv)
 	char *lname, *libenv;
 {
 	char rline[10],libn[120], *bp;
@@ -462,9 +465,9 @@ openlib(lname,libenv)
 	if (strlen(libenv)!=0) {
 		strncpy(libn,libenv,sizeof(libn));
 #ifdef UNIX
-		strncat(libn,"/",sizeof(libn));
+		strncat(libn,"/",sizeof(libn)-1);
 #endif
-		strncat(libn,lname,sizeof(libn)-strlen(libn));
+		strncat(libn,lname,sizeof(libn)-strlen(libn)-1);
 		}
 	else strncpy(libn,lname,sizeof(libn));
 #else
@@ -595,6 +598,7 @@ closelib()
 #endif
 }
 
+int
 GETLIB(seq,maxs,libstr,libpos,lcont)
 	unsigned char *seq;
 	int maxs;
@@ -1179,8 +1183,8 @@ iranlib(str,cnt,seek)
 	if ((bp=strchr(lline,'\n'))!=NULL) *bp=0;
 	if ((bp=strchr(lline,' '))!=NULL) *bp=0;
 	strncpy(str,lline,cnt);
-	strncat(str,"  ",cnt-strlen(str));
-	strncat(str,tline,cnt-strlen(str));
+	strncat(str,"  ",cnt-strlen(str)-1);
+	strncat(str,tline,cnt-strlen(str)-1);
 	str[cnt-1]='\0';
 	
 	fseek(libf,seek,0);
@@ -1307,8 +1311,8 @@ vranlib(str,cnt,seek)
 
     if ((bp=strchr(lline,'\r'))!=NULL) *bp=' ';
     if ((bp=strchr(lline,'\n'))!=NULL) *bp='\0';
-    strncat(str," ",(size_t)cnt);
-    strncat(str,lline,(size_t)cnt-strlen(str));
+    strncat(str," ",(size_t)cnt-1);
+    strncat(str,lline,(size_t)cnt-strlen(str)-1);
   }
   else {
     str[0]='\0';
@@ -1435,9 +1439,9 @@ gcg_ranlib(str,cnt,seek)
 
     if ((bp=strchr(bp1,'\r'))!=NULL) *bp='\0';
     if ((bp=strchr(bp1,'\n'))!=NULL) *bp='\0';
-    strncat(str," ",(size_t)cnt);
-    strncat(str,bp1,(size_t)cnt-strlen(str));
-    if (bp1!=llp) strncat(str,llp,(size_t)cnt-strlen(str));
+    strncat(str," ",(size_t)cnt-1);
+    strncat(str,bp1,(size_t)cnt-strlen(str)-1);
+    if (bp1!=llp) strncat(str,llp,(size_t)cnt-strlen(str)-1);
   }
   else {
     str[0]='\0';
@@ -1449,6 +1453,7 @@ gcg_ranlib(str,cnt,seek)
 
 #endif	/* NOLIB */
 
+int
 scanseq(seq,n,str)
 	char *seq, *str;
 	int n;

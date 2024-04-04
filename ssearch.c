@@ -12,6 +12,11 @@
 #include <ctype.h>
 #include <math.h>
 
+#ifndef max
+#define max(a,b) (((a)>(b))?(a):(b))
+#define min(a,b) (((a)<(b))?(a):(b))
+#endif
+
 char *refstr="\nPlease cite:\n T. F. Smith and M. S. Waterman, (1981) J. Mol. Biol. 147:195-197; \n W.R. Pearson (1991) Genomics 11:635-650\n";
 char *verstr="version 2.0u64, Sept. 1997";
 char *progstr="SSEARCH";

@@ -2,7 +2,8 @@
 #sun (bsd)
 # for mips, also use: -mips2 -O2
 #
-CC= cc -O
+## CC= cc -O
+CC= cc -g
 CFLAGS= -DUNIX -DBIGMEM -DSFCHAR="':'" -DEXPM1 -DPROGRESS
 LFLAGS= -lm -o
 
@@ -69,14 +70,14 @@ align : align.o pam.o llmax.o lgetaa.o ndispn.o time.o
 align0 : align.o pam.o llmax0.o lgetaa.o ndispn.o time.o
 	$(CC) align.o pam.o llmax0.o lgetaa.o ndispn.o time.o $(LFLAGS) align0
 
-lalign : lalign.o pam.o lsim.o lgetaa.o ndispn.o time.o
-	$(CC) lalign.o pam.o lsim.o lgetaa.o ndispn.o time.o $(LFLAGS) lalign
+lalign : lalign2.o pam.o lsim2.o lgetaa.o ndispn.o ag_stats.o apam.o time.o
+	$(CC) lalign2.o lsim2.o lgetaa.o ndispn.o ag_stats.o apam.o time.o $(LFLAGS) lalign
 
-plalign : plalign.o pam.o plsim.o lgetaa.o ps_dispn.o time.o
-	$(CC) plalign.o pam.o plsim.o lgetaa.o ps_dispn.o time.o $(LFLAGS) plalign
+plalign : plalign.o pam.o plsim.o lgetaa.o ps_dispn.o ag_stats.o apam.o time.o
+	$(CC) plalign.o plsim.o lgetaa.o ps_dispn.o ag_stats.o apam.o time.o $(LFLAGS) plalign
 
-flalign : plalign.o pam.o plsim.o lgetaa.o fldispn.o time.o
-	$(CC) plalign.o pam.o plsim.o lgetaa.o fldispn.o time.o $(LFLAGS) flalign
+flalign : plalign.o pam.o plsim.o lgetaa.o fldispn.o ag_stats.o apam.o time.o
+	$(CC) plalign.o plsim.o lgetaa.o fldispn.o ag_stats.o apam.o time.o $(LFLAGS) flalign
 
 ssearch : ssearch.o pam.o sgmata.o llmax.o scalesws.o getaa.o ncbl_lib.o ndispn.o time.o
 	$(CC) ssearch.o pam.o sgmata.o llmax.o scalesws.o getaa.o ncbl_lib.o ndispn.o time.o $(LFLAGS) ssearch
@@ -125,13 +126,16 @@ tfastx.o : fffasta.c upam.gbl
 
 align.o : align.c upam.gbl
 
-plalign.o : lalign.c upam.gbl
-	$(CC) $(CFLAGS) -DTPLOT -c lalign.c
-	mv lalign.o plalign.o
+plalign.o : lalign2.c upam.gbl
+	$(CC) $(CFLAGS) -DTPLOT -c lalign2.c -o plalign.o
 
-lalign.o : lalign.c upam.gbl
+lalign2.o : lalign2.c upam.gbl
 
 ssearch.o : ssearch.c upam.gbl
+
+ag_stats.o : ag_stats.c alt_parms.h
+
+apam.o : apam.c upam.gbl
 
 urdfn.o : urdf.c upam.gbl
 	$(CC)  $(CFLAGS) -c -DMAXSAV=10 urdf.c
@@ -169,12 +173,11 @@ sgmata.o : zzlgmata.c zzgmata.gbl upam.gbl
 	$(CC)  $(CFLAGS) -c -DSMATCH zzlgmata.c
 	mv zzlgmata.o sgmata.o
 
-lsim.o : lsim.c zzgmata.gbl upam.gbl
-	$(CC)  $(CFLAGS) -c lsim.c
+lsim2.o : lsim2.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -c lsim2.c
 
-plsim.o : lsim.c zzgmata.gbl upam.gbl
-	$(CC)  $(CFLAGS) -DTPLOT -c lsim.c
-	mv lsim.o plsim.o
+plsim.o : lsim2.c zzgmata.gbl upam.gbl
+	$(CC)  $(CFLAGS) -DTPLOT -c lsim2.c -o plsim.o
 
 f_band.o : f_band.c zzgmata.gbl upam.gbl
 	$(CC)  $(CFLAGS) -c f_band.c

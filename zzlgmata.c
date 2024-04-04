@@ -23,6 +23,7 @@ of the match is shown.  Put in showall == -1 briefly, then removed it.
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #ifndef max
 #define max(a,b) (((a)>(b))?(a):(b))
@@ -64,12 +65,12 @@ static int nres;
 
 #ifndef SMATCH
 #ifdef LFASTA
-dmatch(s0,s1,display)
+void dmatch(s0,s1,display)
      int s0,s1,display;
 {
   int crctmp;
 #else
-dmatch(hoff,display)
+void dmatch(hoff,display)
   int hoff, display;
 {
   int s0, s1;

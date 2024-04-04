@@ -78,6 +78,9 @@
 #include <ctype.h>
 #include <math.h>
 
+/* cannot use <unistd.h> because of name clash with 'link' */
+int isatty(int);
+
 char *refstr="\nPlease cite:\n W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448\n";
 char *verstr="v2.1u00 Mar, 2001";
 #ifdef TFASTX
@@ -424,10 +427,33 @@ char *iprompt0=" FASTA searches a protein or DNA sequence data bank\n";
 #endif
 #endif
 
+void initenv(int, char **);
+int getseq(char *, char *, int, int *);
+void gettitle(char *, char *, int n);
+void revcomp(char *, int);
+void resetp(int);
+void libchoice(char *, int, char *);
+void libselect(char *);
+void addfile(char *, char *);
+int initpam(char *);
+void initpam2();
+void initparm();
+void hashaa(char *, int, int);
+void allocdiag(int);
+void initbest(int);
+int openlib(char *, char *);
+void sortbest(), sortbeste();
+void ksort(struct beststr *v[], int n, int (*cmp)(int));
+void kssort(struct beststr *v[], int n);
+void kpsort(struct beststr *v[], int n);
+void dhash();
+void freehash();
+
+
 #include "upam.gbl"		/* includes pam array */
 
-main(argc, argv)
-        int argc; char **argv;
+int main(argc, argv)
+     int argc; char **argv;
 {
   char tname[QFILE_SIZE], lname[LFILE_SIZE], llname[LFILE_SIZE], qline[QFILE_SIZE];
   int itemp, iln,i; 
@@ -1046,7 +1072,7 @@ DNA sequence library.  Do not use a DNA scoring matrix.\n");
 
 extern int *sascii, nascii[], aascii[];
 
-initenv(argc,argv)
+void initenv(argc,argv)
      int argc;
      char **argv;
 {
@@ -1261,7 +1287,7 @@ resetp(dnaseq)
   }
 }
 
-initparm()
+void initparm()
 {
 	char *getenv(), *cptr;
 	int itemp, btemp;
@@ -1365,6 +1391,7 @@ allochash(n0, hmax)
 		}
 	}
 
+void
 freehash()
 {
 	free(harr); free(link); free(pamh2);
@@ -1376,6 +1403,7 @@ freehash()
         looking for the max score, and use the pam matrix
 */
 
+void
 dhash()
 {
   int nd, ndo, n00;	                 /* diagonal array size */
@@ -1865,6 +1893,7 @@ dhash()
     }
   }
 
+void
 #ifdef ALLOCN0
 savemax(dptr,dpos)
 	register struct dstruct *dptr; int dpos;
@@ -1915,6 +1944,7 @@ savemax(dptr)
 	lowmax = lmp;
 	}
 	
+void
 initpam2()
   {
     int i, j, k;
@@ -1980,6 +2010,7 @@ spam(dmax)
   return maxv.score;
 }
 
+int
 sconn(v,n)
      struct beststr *v[];
      int n;
@@ -2784,6 +2815,7 @@ l1:	istop = min(nbest,nshow);
 	}
 #endif	/* LFASTA */
 
+void
 selectz(k,n)	/* k is rank in array */
      int k,n;
 {
@@ -2796,7 +2828,6 @@ selectz(k,n)	/* k is rank in array */
 #endif
 
   l=0; r=n-1;
-
 
   while ( r > l ) {
     i = l-1;
@@ -2813,6 +2844,7 @@ selectz(k,n)	/* k is rank in array */
   }
 }
 
+void
 sortbest()
 {
 #ifndef FAR_PTR
@@ -2828,6 +2860,7 @@ sortbest()
 #endif
 }
 
+void
 sortbeste()
 {
 #ifndef FAR_PTR
@@ -2854,6 +2887,7 @@ sortbestz()
 #endif
 }
 
+int
 cmps(ptr1,ptr2)
      struct beststr *ptr1, *ptr2;
 {
@@ -2862,6 +2896,7 @@ cmps(ptr1,ptr2)
   else return (0);
 }
 
+int
 cmpa(ptr1,ptr2)
      struct beststr *ptr1, *ptr2;
 {
@@ -2870,6 +2905,7 @@ cmpa(ptr1,ptr2)
   else return (0);
 }
 
+int
 cmp1(ptr1,ptr2)
      struct beststr *ptr1, *ptr2;
 {
@@ -2878,6 +2914,7 @@ cmp1(ptr1,ptr2)
   else return (0);
 }
 
+int
 cmpz(ptr1,ptr2)
      struct beststr *ptr1, *ptr2;
 {
@@ -2886,6 +2923,7 @@ cmpz(ptr1,ptr2)
   else return (0);
 }
 
+int
 cmpe(ptr1,ptr2)
      struct beststr *ptr1, *ptr2;
 {
@@ -2895,6 +2933,7 @@ cmpe(ptr1,ptr2)
 }
 
 #ifdef FAR_PTR
+int
 fcmps(ptr1,ptr2)
      struct beststr huge * ptr1, huge * ptr2;
 {
@@ -2903,6 +2942,7 @@ fcmps(ptr1,ptr2)
   else return (0);
 }
 
+int
 fcmp1(ptr1,ptr2)
      struct beststr huge * ptr1, huge * ptr2;
 {
@@ -2911,6 +2951,7 @@ fcmp1(ptr1,ptr2)
   else return (0);
 }
 
+int
 fcmpa(ptr1,ptr2)
      struct beststr huge * ptr1, huge * ptr2;
 {
@@ -2919,6 +2960,7 @@ fcmpa(ptr1,ptr2)
   else return (0);
 }
 
+int
 fcmpz(ptr1,ptr2)
      struct beststr huge * ptr1, huge * ptr2;
 {
@@ -2927,6 +2969,7 @@ fcmpz(ptr1,ptr2)
   else return (0);
 }
 
+int
 fcmpe(ptr1,ptr2)
      struct beststr huge * ptr1, huge * ptr2;
 {
@@ -2936,6 +2979,7 @@ fcmpe(ptr1,ptr2)
 }
 #endif
 
+int
 cmpp(ptr1,ptr2)
      struct beststr *ptr1, *ptr2;
 {
@@ -2944,6 +2988,7 @@ cmpp(ptr1,ptr2)
   else return (0);
 }
 
+void
 kssort(v,n)
      struct beststr *v[]; int n;
 {
@@ -2959,6 +3004,7 @@ kssort(v,n)
       }
 }
 
+void
 kpsort(v,n)
      struct beststr *v[]; int n;
 {
@@ -2975,11 +3021,12 @@ kpsort(v,n)
 }
 
 
+void
 ksort(v,n,comp)
-     void *v[]; int n, (*comp)();
+     struct beststr *v[]; int n, (*comp)();
 {
   int gap, i, j;
-  char *tmp;
+  struct beststr *tmp;
 	
   for (gap=n/2; gap>0; gap/=2)
     for (i=gap; i<n; i++)
@@ -3009,6 +3056,7 @@ fksort(v,n,comp)
 
 #endif
 
+int
 getlnames(tname)		/* read in the library names */
      char *tname;
 {
@@ -3059,6 +3107,7 @@ getlnames(tname)		/* read in the library names */
 #define MAXCHFIL 80
 #define MAXCH 40
 
+void
 libchoice(lname,nl,aaenv)
      char *lname, *aaenv;
      int nl;
@@ -3121,6 +3170,7 @@ libchoice(lname,nl,aaenv)
   }
 }
 
+void
 libselect(lname)
      char *lname;
 {
@@ -3166,7 +3216,7 @@ libselect(lname)
 char *lbptr;
 int nnsize;
 
-addfile(fname,env)
+void addfile(fname,env)
      char *fname, *env;
 {
   char tname[120];
