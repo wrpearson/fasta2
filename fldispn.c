@@ -354,12 +354,12 @@ opnline(long x, long y, int s, double e_val, double percent, int nc)
   fprintf(outfd,".! %6.2f%% identity in %d overlap\n",percent,nc);
   if (have_stats) fprintf(outfd,".! E() < %6.4g\n",e_val);
   if (!revflg) {
-    fprintf(outfd,".m %d %d\n",y,x);
+    fprintf(outfd,".m %ld %ld\n",y,x);
     last_x = y;
     last_y = x;
   }
   else {
-    fprintf(outfd,".m %d %d\n",y,n0save-x);
+    fprintf(outfd,".m %ld %ld\n",y,n0save-x);
     last_x = y;
     last_y = n0save-x;
   }

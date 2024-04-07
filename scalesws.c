@@ -602,8 +602,9 @@ float z_to_E(zs)
   return (float)num_db_entries * (e > .01 ? 1.0 - exp(-e) : e);
 }
 
-float zs_to_E(float zs,int n1) /* computes E-value for a given z value,
-				  assuming extreme value distribution */
+float
+zs_to_E(float zs,int n1) /* computes E-value for a given z value,
+			    assuming extreme value distribution */
 {
   float e, z, k;
 
@@ -623,9 +624,9 @@ float zs_to_E(float zs,int n1) /* computes E-value for a given z value,
   return k * (e > .01 ? 1.0 - exp(-e) : e);
 }
 
-float zs_to_Ec(zs) /* computes 1.0 - E value for a given z value,
-		    assuming extreme value distribution */
-     float zs;
+float
+zs_to_Ec(float zs) /* computes 1.0 - E value for a given z value,
+		assuming extreme value distribution */
 {
   float e, z;
 

@@ -3,7 +3,7 @@
 # for mips, also use: -mips2 -O2
 #
 ## CC= cc -O
-CC= cc -g
+CC= cc --std=c89 -g
 CFLAGS= -DUNIX -DBIGMEM -DSFCHAR="':'" -DEXPM1 -DPROGRESS
 LFLAGS= -lm -o
 

@@ -223,7 +223,11 @@ int ALIGN(A,B,M,N,W,G,H,S,NC)
 static char ALINE[51], BLINE[51], CLINE[51];
 extern char *sq;
 
-int DISPLAY(A,B,M,N,S,AP,BP) char A[], B[]; int M, N; int S[], AP, BP;
+void
+DISPLAY(A,B,M,N,S,AP,BP) 
+  char A[], B[]; 
+  int M, N;
+  int S[], AP, BP;
 { register char *a, *b, *c;
   register int   i,  j, op;
            int   lines, ap, bp;

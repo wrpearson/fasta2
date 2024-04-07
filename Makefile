@@ -2,9 +2,8 @@
 # for SGI also use: -signed
 #
 
-CC= cc -O
+CC= cc -O --std=c89
 #CC=cc -g
-#CC=insure -g
 
 CFLAGS= -DUNIX -DBIGMEM -DSFCHAR="':'" -DEXPM1 -DPROGRESS -DGAP_OPEN
 LFLAGS= -lm -o

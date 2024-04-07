@@ -567,8 +567,7 @@ fit_llens()
   fit_llen();
 }
 
-float find_z(score, length)
-     int score, length;
+float find_z(int score, int length)
 {
   float log_len, var, z;
   
@@ -580,8 +579,7 @@ float find_z(score, length)
   return (50.0 + 10.0*z);
 }
 
-float find_zm(score, length)
-     int score, length;
+float find_zm(int score, int length)
 {
   float log_len, var, z;
   
@@ -609,7 +607,8 @@ float z_to_E(zs)
   return (float)num_db_entries * (e > .01 ? 1.0 - exp(-e) : e);
 }
 
-float zs_to_E(float zs,int n1) /* computes E-value for a given z value,
+float
+zs_to_E(float zs,int n1) /* computes E-value for a given z value,
 				  assuming extreme value distribution */
 {
   float e, z, k;
@@ -630,8 +629,9 @@ float zs_to_E(float zs,int n1) /* computes E-value for a given z value,
   return k * (e > .01 ? 1.0 - exp(-e) : e);
 }
 
-float zs_to_Ec(float zs) /* computes 1.0 - E value for a given z value,
-		    assuming extreme value distribution */
+float
+zs_to_Ec(float zs) /* computes 1.0 - E value for a given z value,
+ 		      assuming extreme value distribution */
 {
   float e, z;
 

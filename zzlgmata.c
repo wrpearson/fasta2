@@ -36,7 +36,7 @@ of the match is shown.  Put in showall == -1 briefly, then removed it.
 
 extern int n0, n1;		/* length of sequences */
 extern int dnaseq;
-extern char *aa0, *aa1;		/* sequence arrays */
+extern unsigned char *aa0, *aa1;		/* sequence arrays */
 extern FILE *outfd;
 extern int showall;	/* show complete sequences, not just overlaps */
 extern int llen;
@@ -46,6 +46,23 @@ extern int optwid;
 int smin0, smin1, smins;	/* set bounds for discons */
 extern int markx;
 
+extern int FLOCAL_ALIGN();
+extern int LOCAL_ALIGN();
+extern void B_ALIGN();
+extern void ALIGN();
+extern void RLOCAL_ALIGN();
+
+extern void discons();
+extern void disgraph();
+extern void aancpy(char *seqc, unsigned char *aa, int len);
+
+void initres();
+void initseq(int);
+int calcons(unsigned char *aa0, int n0, 
+	    unsigned char *aa1, int n1,
+	    int *res, int *nc);
+void freeseq();
+
 #ifdef LFASTA
 extern int oneseq;
 extern int lcrc0[];
@@ -54,6 +71,10 @@ extern int ncrc;
 extern int maxcrc;
 extern int iscore, gscore;
 int pmirror;
+int crcknew();
+
+void opnline(), clsline();
+
 #endif
 
 int window;
@@ -62,15 +83,18 @@ static int kcount=0;
 static int *res=NULL;
 static int nres;
 
-
 #ifndef SMATCH
 #ifdef LFASTA
-void dmatch(s0,s1,display)
+int LLOCAL_ALIGN();
+
+int
+dmatch(s0,s1,display)
      int s0,s1,display;
 {
   int crctmp;
 #else
-void dmatch(hoff,display)
+int
+dmatch(hoff,display)
   int hoff, display;
 {
   int s0, s1;
@@ -226,7 +250,7 @@ static struct swstr {
 } *ss;
 
 smatch(aa0,n0,aa1,n1,flag)
-     char *aa0, *aa1;
+     unsigned char *aa0, *aa1;
      int n0, n1;
      int flag;
 {
@@ -237,7 +261,7 @@ smatch(aa0,n0,aa1,n1,flag)
   int nc, minc, maxc, lc;
   float percent;
   register int *waa1;
-  register char *aa0p;
+  register unsigned char *aa0p;
   
   /* allocate space for the scoring arrays */
   if (ss==NULL) {
@@ -364,6 +388,7 @@ found:
   return score;
 }
 
+void
 initres(rsiz)		/* initialize results array */
      int rsiz;
 {
@@ -373,8 +398,9 @@ initres(rsiz)		/* initialize results array */
      exit(1);}
 }
 
+void
 initseq(seqsiz)		/* initialize arrays */
-	int seqsiz;
+  int seqsiz;
 {
   seqc0=calloc((size_t)seqsiz,sizeof(char));
   seqc1=calloc((size_t)seqsiz,sizeof(char));
@@ -384,6 +410,7 @@ initseq(seqsiz)		/* initialize arrays */
   salloc = 1;
 }
 
+void
 freeseq()
 {
 	free(seqc0); free(seqc1);
@@ -394,9 +421,9 @@ freeseq()
 	going to the maximum match and moving left and up
 */
 
-
+int
 calcons(aa0,n0,aa1,n1,res,nc)
-     char *aa0, *aa1;
+     unsigned char *aa0, *aa1;
      int n0, n1;
      int *res;
      int *nc;
@@ -530,6 +557,9 @@ calcons(aa0,n0,aa1,n1,res,nc)
 }
 
 #ifdef LFASTA
+extern long crck(char *, int);
+
+int
 crcknew(seqc0,seqc1,nc,maxcrc)
 	char *seqc0, *seqc1; int nc; int maxcrc;
 {

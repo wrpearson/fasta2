@@ -18,7 +18,8 @@
 
 extern int bestoff, bestscale, bkfact, scfact, bktup, bestmax, histint;
 
-void initpam(mfname)
+int
+initpam(mfname)
 	char *mfname;
 {
 	char line[512], *lp;

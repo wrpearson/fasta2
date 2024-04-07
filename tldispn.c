@@ -47,6 +47,18 @@ double fxscal, fyscal, fxoff, fyoff;
 #define SX(x) (int)((double)(x)*fxscal+fxoff)
 #define SY(y) (int)((double)(y)*fyscal+fyoff)
 
+void discons();
+void move();
+void draw();
+void drawstr();
+void xaxis(long);
+void yaxis(long);
+void legend();
+void linetype(int);
+void opnline();
+void clsline();
+
+void
 discons(seqc0, seqc1, nc)
      char *seqc0, *seqc1;
      int nc;
@@ -107,8 +119,10 @@ discons(seqc0, seqc1, nc)
   if (x1 > pmaxx) printf("\r* n1 * %3ld %3ld\n",x1,pmaxx);
 }
 
+void
 disgraph() {};
 
+void
 aancpy(to,from,count)
 	char *to, *from;
 	int count;
@@ -122,6 +136,7 @@ aancpy(to,from,count)
 	*tp=0;
 	}
 
+int
 iidex(str, chr)
 	char *str, chr;
 {
@@ -130,6 +145,7 @@ iidex(str, chr)
 	return (-1);
 	}
 
+int
 toupper(c)
 	char c;
 {
@@ -137,12 +153,14 @@ toupper(c)
 	return c;
 	}
 
+int
 min(arg1, arg2)
 	int arg1, arg2;
 {
 	return (arg1<=arg2) ? arg1 : arg2;
 	}
 
+void
 openplt(n0, n1)
 	long n0, n1;
 {
@@ -192,6 +210,7 @@ openplt(n0, n1)
 	legend();
 	}
 	
+void
 drawdiag(n0,n1)
 	long n0, n1;
 {
@@ -202,6 +221,7 @@ drawdiag(n0,n1)
 
 int tarr[] = {10,20,50,100,200,500,1000,2000,5000};
 int ntarr = sizeof(tarr);
+void
 xaxis(n)
      long n;
 {
@@ -230,6 +250,7 @@ found:	js = tarr[i];
 	drawstr(ltitle);
 	}
 		
+void
 yaxis(n)
      long n;
 {
@@ -255,6 +276,7 @@ found:	js = (long)tarr[i];
 	drawstr(numstr);
 	}
 
+void
 legend()
 {
 	int i, del;
@@ -275,6 +297,7 @@ legend()
 		}
 	}
 
+void
 linetype(type)
 	int type;
 {
@@ -282,12 +305,14 @@ linetype(type)
 	printf("\033%c",linchar[linarr[type]]);
 		}
 
+void
 closeplt()
 {
 	move(0,0);
 	putchar('\r');
 	}
 
+void
 opnline(x,y,s,percent,nc)
      long x, y;
      int s, nc;
@@ -299,12 +324,14 @@ opnline(x,y,s,percent,nc)
   else linetype(3);
 }
 
+void
 clsline(x,y,s)
      long x, y;
      int s;
 {
 }
 
+void
 move(x,y)
 	unsigned int x, y;
 {
@@ -315,6 +342,7 @@ move(x,y)
 	fputc((x&0x1f)+0x40,stdout);
 	}
 
+void
 draw(x,y)
 	unsigned int x, y;
 {
@@ -324,6 +352,7 @@ draw(x,y)
 	fputc((x&0x1f)+0x40,stdout);
 	}
 
+void
 drawstr(str)
 	char *str;
 {

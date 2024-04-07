@@ -20,7 +20,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <ctype.h>
+#include <math.h>
 #include <string.h>
+
 char *refstr="\nPlease cite:\n W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448;\n";
 char *verstr="version 2.0u1, September, 1995";
 
@@ -56,7 +59,7 @@ char prompt[256];
 #define MAXSAV 20	/* number of best diagonals saved */
 #endif
 #define MAXHIST 51	/* number of histogram divisions */
-/*#define HISTSIZE 2	/* size of histogram division */
+/* #define HISTSIZE 2	*/ /* size of histogram division */
 
 FILE *outfd;		/* fd for output file */
 int smark[4];
@@ -173,6 +176,39 @@ char *iprompt0=" PRDF compares a test sequence to a shuffled sequence\n";
 char *iprompt1=" test sequence file name: ";
 char *iprompt2=" sequence to shuffle: ";
 
+void initenv();
+int getseq(char *, unsigned char*, int, int *);
+void resetp(int);
+int initpam();
+void initpam2();
+void initparm();
+int shscore();
+void hashaa();
+void allocdiag(int);
+void initialize_hist();
+void free_hist();
+extern void est_lambda_K();
+void inithist();
+void prhist();
+void allochash();
+int dhash();
+int spam();
+int dmatch();
+void savemax();
+int sconn();
+
+extern void irand();
+extern int nrand();
+
+void wshuffle();
+void shuffle();
+void addhist(), addhist0(), addhistg();
+
+void ptime();
+void ksort(), ssort();
+
+
+int
 main(argc, argv)
      int argc; char **argv;
 {
@@ -418,6 +454,7 @@ main(argc, argv)
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
      int argc; char **argv;
 {
@@ -492,6 +529,7 @@ initenv(argc,argv)
     fprintf(stderr," matrix file reset to %s\n",smptr);
 }
 
+void
 resetp(dnaseq)
      int dnaseq;
 {
@@ -513,6 +551,7 @@ resetp(dnaseq)
   }
 }
 
+void
 initparm()
 {
 	char *getenv(), *cptr;
@@ -533,6 +572,7 @@ initparm()
 
 /*	hashaa - hash sequence 0 for rapid lookup of seq 1 (library) */
 
+void
 hashaa(aa0, n0, ktup)
 	char *aa0; int n0, ktup;
 {
@@ -592,6 +632,7 @@ hashaa(aa0, n0, ktup)
 		for (i0=0; i0<nsq; i0++) pamh1[i0]=fact;
 	}
 
+void
 allochash(n0, hmax)
 	int n0, hmax;
 {
@@ -616,6 +657,7 @@ allochash(n0, hmax)
         looking for the max score, and use the pam matrix
 */
 
+int
 dhash(i0score,gscore)
 	int *i0score,*gscore;
 {
@@ -793,6 +835,7 @@ dhash(i0score,gscore)
 	else { *i0score=0; *gscore=0; return 0;}
 	}
 
+void
 #ifdef ALLOCN0
 savemax(dptr,dpos)
 	register struct dstruct *dptr; int dpos;
@@ -838,6 +881,7 @@ savemax(dptr)
 	lowscor = i;
 	}
 	
+void
 initpam2()
 {
 	int i, j, k;
@@ -848,6 +892,7 @@ initpam2()
 			pam2[j][i] = pam2[i][j] = pam[k++];
 	}
 
+int
 spam(dmax)
 	struct beststr *dmax;
 {
@@ -894,6 +939,7 @@ spam(dmax)
 	return maxv.score;
 	}
 
+int
 sconn(v,n)
 	struct beststr *v[];
 	int n;
@@ -954,6 +1000,7 @@ sconn(v,n)
 	else return (0);
 	}
 
+int
 shscore(aa0,n0)	/* calculate the 100% identical score */
 	char *aa0; int n0;
 {
@@ -963,6 +1010,7 @@ shscore(aa0,n0)	/* calculate the 100% identical score */
 	return sum;
 	}
 	
+void
 inithist()
 {
 	int i;
@@ -978,6 +1026,7 @@ inithist()
 	lmin = glmin = lmin0 = MAXHIST*histint;
 	}
 	
+void
 prhist(fd,score0, i0score0, gscore0)
      FILE *fd; int score0, i0score0, gscore0;
 {
@@ -1059,6 +1108,7 @@ prhist(fd,score0, i0score0, gscore0)
   fprintf(fd,"  scan time: "); ptime(fd,tscan-tstart); fprintf(fd,"\n");
 }
 
+void
 addhist(score)
 	int score;
 {
@@ -1072,6 +1122,7 @@ addhist(score)
   hist[score]++;
 }
 
+void
 addhistg(score)
      int score;
 {
@@ -1085,6 +1136,7 @@ addhistg(score)
   ghist[score]++;
 }
 
+void
 addhist0(score)
      int score;
 {
@@ -1098,6 +1150,7 @@ addhist0(score)
   hist0[score]++;
 }
 
+void
 allocdiag(dsize)	/* allocates diagonal structures */
      int dsize;
 {
@@ -1133,6 +1186,7 @@ int cmpi(val1, val2)
   else return 0;
 }
 
+void
 ksort(v,n,comp)
 	void *v[]; int n, (*comp)();
 {
@@ -1148,7 +1202,8 @@ ksort(v,n,comp)
       }
 }
 
-void ssort(v,n)
+void
+ssort(v,n)
      int *v; int n;
 {
   int gap, i, j;
@@ -1163,6 +1218,7 @@ void ssort(v,n)
 }
 
 int ieven = 1;
+void
 wshuffle(from,to,n,wsiz)	/* copies from from to from shuffling */
 	char  *from, *to; int n, wsiz;
 {
@@ -1213,6 +1269,7 @@ wshuffle(from,to,n,wsiz)	/* copies from from to from shuffling */
   to[n] = -1;
 }
 
+void
 shuffle(from,n)	/* copies from from to from shuffling */
 	char  *from; int n;
 {
@@ -1228,7 +1285,8 @@ shuffle(from,n)	/* copies from from to from shuffling */
 }
 
 /* ckalloc - allocate space; check for success */
-char *ckalloc(amount)
+char  *
+ckalloc(amount)
 int amount;
 {
   char *p;
@@ -1243,18 +1301,24 @@ int amount;
 /*  stubs for linking */
 int llen;
 
+void
 aancpy()
 {}
 
 int markx;
+void
 disgraph()
 {}
 
+void
 B_ALIGN() {}
 
+void
 ALIGN() {}
 
+void
 LOCAL_ALIGN() {}
 
+void
 discons()
 {}

@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <string.h>
 
 int max_x=1024, max_y=780;
 extern float f_fx, f_fy;
@@ -12,6 +13,10 @@ int nlinarr=5;
 
 float fxscal, fyscal, fxoff, fyoff;
 
+void move();
+void linetype();
+
+void
 openpl()
 {
 	printf("\033\014\n");
@@ -20,20 +25,24 @@ openpl()
 	linetype(0);
 	}
 	
+void
 linetype(type)
 	int type;
 {
 	printf("\033%c",linchar[type]);
 	}
 
+void
 clsline() {}
 
+void
 closepl()
 {
 	move(0,0);
 	putchar('\r');
 	}
 
+void
 space(x0,y0,x1,y1)
 	int x0, x1, y0, y1;
 {
@@ -43,6 +52,7 @@ space(x0,y0,x1,y1)
 	fyscal = (float)(max_y)/(float)(y1-y0);
 	}
 
+void
 move(x,y)
 	int x, y;
 {
@@ -56,6 +66,7 @@ move(x,y)
 	fputc((xx&0x1f)+0x40,stdout);
 	}
 
+void
 cont(x,y)
 	int x, y;
 {
@@ -68,6 +79,7 @@ cont(x,y)
 	fputc((xx&0x1f)+0x40,stdout);
 	}
 
+void
 drawstr(str)
 	char *str;
 {
@@ -78,6 +90,8 @@ drawstr(str)
 
 int tarr[] = {10,20,50,100,200,500,1000,2000,5000};
 int ntarr = sizeof(tarr);
+
+void
 xaxis(int n, char *title)
 {
   int i, jm, tick;

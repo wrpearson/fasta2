@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 struct sx_s {int C1, C2, C3, I1, I2, I3, flag; };
 
 static struct sx_s *cur=NULL;
@@ -10,7 +9,8 @@ static struct sx_s *cur=NULL;
 #define max(x,y) ((x) > (y) ? (x) : (y))
 #define min(x,y) ((x) < (y) ? (x) : (y))
 
-static init_row(row, sp)
+static void
+init_row(row, sp)
     struct sx_s *row;
     int sp;
 {
@@ -23,15 +23,16 @@ static init_row(row, sp)
   }
 }
 
-extern lx_align(char *prot_seq,  /* array with protein sequence numbers*/
-		   int len_prot,    /* length of prot. seq */
-		   char *dna_prot_seq, /* translated DNA sequence numbers*/
-		   int len_dna_prot,   /* length trans. seq. */
-		   int pam_matrix[][32],   /* scoring matrix */
-		   int gopen, int gext, /* gap open, gap extend penalties */
-		   int gshift,         /* frame-shift penalty */
-		   int start_diag,     /* start diagonal of band */
-		   int width)         /* width for band alignment */
+int
+lx_align(char *prot_seq,  /* array with protein sequence numbers*/
+	 int len_prot,    /* length of prot. seq */
+	 char *dna_prot_seq, /* translated DNA sequence numbers*/
+	 int len_dna_prot,   /* length trans. seq. */
+	 int pam_matrix[][32],   /* scoring matrix */
+	 int gopen, int gext, /* gap open, gap extend penalties */
+	 int gshift,         /* frame-shift penalty */
+	 int start_diag,     /* start diagonal of band */
+	 int width)         /* width for band alignment */
 {
   char *ckalloc();
   int i, j, bd, bd1, x1, x2, sp, p1=0, p2=0;

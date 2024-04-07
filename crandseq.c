@@ -10,6 +10,8 @@
 #include <string.h>
 #include <ctype.h>
 
+int isatty();
+
 char *verstr="version 2.1, Feb, 1997";
 
 #define TRUE 1
@@ -34,7 +36,7 @@ FILE *outfd;		/* fd for output file */
 /* globals for matching */
 
 
-char *aa0, *aa10;	/* amino acid sequence data */
+unsigned char *aa0, *aa10;	/* amino acid sequence data */
 int maxn;		/* max space for lib sequence (MAXDIAG-n0) */
 int n0, cn0;			/* length of aa0, length of aa1, n0+n1,
 				diagonal offset */
@@ -54,6 +56,14 @@ long sq0off=1;
 int wflag = -1;
 int wsiz;
 
+extern int getntseq(char *, unsigned char *, int, int *);
+extern void irand();
+extern int nrand();
+void initenv();
+void shuffle();
+void wshuffle();
+
+int
 main(argc, argv)
      int argc; char **argv;
 {
@@ -172,6 +182,7 @@ main(argc, argv)
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
      int argc; char **argv;
 {
@@ -206,6 +217,7 @@ initenv(argc,argv)
 }
 
 int ieven = 1;
+void
 wshuffle(from,to,n,wsiz)	/* copies from from to from shuffling */
 	char  *from, *to; int n, wsiz;
 {
@@ -351,6 +363,7 @@ wshuffle(from,to,n,wsiz)	/* copies from from to from shuffling */
   to[n] = -1;
 }
 
+void
 shuffle(from,n)	/* copies from from to from shuffling */
 	char  *from; int n;
 {
@@ -379,22 +392,27 @@ shuffle(from,n)	/* copies from from to from shuffling */
 /*  stubs for linking */
 int llen;
 
+void
 aancpy()
 {}
 
 int markx;
+void
 disgraph()
 {}
 
+int
 min(v0,v1)
 	int v0, v1;
 {
 	return (v0>v1) ? v1 : v0;
 }
 
+void
 ALIGN()
 {}
 
+void
 discons()
 {}
 

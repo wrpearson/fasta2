@@ -50,7 +50,7 @@ int histint, min_hist, max_hist, maxh;
 extern long num_db_entries;
 extern int *llen_hist;
 extern float *score_sums, *score2_sums;
-float zs_to_E(), zs_to_Ec(), find_z(), find_zm();
+float zs_to_E(float zs, int n), zs_to_Ec(float zs), find_z(int, int), find_zm(int, int);
 extern float ks_dev;
 extern int ks_df;
 

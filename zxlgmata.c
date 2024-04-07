@@ -64,6 +64,20 @@ int nident;
 static int *res=NULL;
 static int nres;
 
+extern int lx_align();
+extern void discons();
+extern void disgraph();
+extern void aancpy(char *seqc, unsigned char *aa, int len);
+extern int pro_dna();
+
+void initres();
+void initseq(int);
+int calcons(unsigned char *aa0, int n0, 
+	    unsigned char *aa1, int n1,
+	    int *res, int nres, int *nc);
+void freeseq();
+
+int
 dmatch(hoff,display)
   int hoff, display;
 {
@@ -160,6 +174,7 @@ static struct swstr {
 
 /* aa0 has DNA sequence, aa1 has prot sequence */
 
+int
 pmatch(aa0,n0,aa0t,n0t,aa1,n1,flag)
      unsigned char *aa0, *aa0t, *aa1;
      int n0, n0t, n1;
@@ -176,7 +191,7 @@ pmatch(aa0,n0,aa0t,n0t,aa1,n1,flag)
 #endif
 
   score = pro_dna(aa1,n1,aa0t,n0,pam2,-(gdelval-ggapval), -ggapval, -gshift,
-		 res,&nres);
+		 res, &nres);
 
   /*    display_alig(res,aa0t,aa1,nres,n0); */
 
@@ -204,6 +219,7 @@ pmatch(aa0,n0,aa0t,n0t,aa1,n1,flag)
   return score;
 }
 
+void
 initres(rsiz)		/* initialize results array */
      int rsiz;
 {
@@ -213,6 +229,7 @@ initres(rsiz)		/* initialize results array */
      exit(1);}
 }
 
+void
 initseq(seqsiz)		/* initialize arrays */
 	int seqsiz;
 {
@@ -224,6 +241,7 @@ initseq(seqsiz)		/* initialize arrays */
   salloc = 1;
 }
 
+void
 freeseq()
 {
   free(seqc0); free(seqc1);
@@ -234,9 +252,9 @@ freeseq()
 	going to the maximum match and moving left and up
 */
 
-
+int
 calcons(aa0,n0,aa1,n1,res,nres,nc)
-     char *aa0, *aa1;
+     unsigned char *aa0, *aa1;
      int n0, n1;
      int *res;
      int nres;

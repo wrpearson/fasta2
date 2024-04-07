@@ -8,6 +8,7 @@
 */
 #define LONG long
 
+long
 crck(s,n)
     char *s; int n;
 {

@@ -12,6 +12,8 @@
 #include <ctype.h>
 #include <math.h>
 
+int isatty(int);
+
 #ifndef max
 #define max(a,b) (((a)>(b))?(a):(b))
 #define min(a,b) (((a)<(b))?(a):(b))
@@ -122,10 +124,10 @@ int deftype=0;		/* default library type */
 char libfn;		/* current library file being searched */
 char ldname[LFILE_SIZE];
 
-char *aa0, *aa1;	/* amino acid sequence data */
+unsigned char *aa0, *aa1;	/* amino acid sequence data */
 
 #ifdef TFASTA
-char *aa10;
+unsigned char *aa10;
 int nframe=6;
 #endif
 
@@ -184,7 +186,10 @@ struct beststr *lowmax;
 long *hist;		/* histogram of all score */
 int histint, min_hist, max_hist, maxh;
 extern long num_db_entries;
-float zs_to_E(), zs_to_Ec(), find_z(), find_zm();
+float zs_to_E(float zs, int n);
+float zs_to_Ec(float zs);
+float find_z(int, int);
+float  find_zm(int, int);
 extern float ks_dev;
 extern int ks_df;
 
@@ -227,6 +232,47 @@ char *iprompt2=" database file name: ";
 
 #include "upam.gbl"		/* includes pam array */
 
+void initenv();
+extern int getseq(char *, unsigned char *, int, int *);
+extern void gettitle(char *, char *, int);
+void resetp();
+void revcomp();
+void libselect();
+void libchoice();
+int getlnames();
+void addfile();
+
+int initpam();
+void initpam2();
+
+void initparm();
+void hashaa(unsigned char *, int, int);
+void allocdiag(int);
+void initbest(int);
+int openlib(char *, char *);
+void sortbest(), sortbeste();
+void sortbestz();
+void ksort();
+void kssort(struct beststr *v[], int n);
+void kpsort(struct beststr *v[], int n);
+int shscore(unsigned char *, int);
+void allochash(int, int);
+void dhash();
+extern int smatch(unsigned char *, int, unsigned char *, int, int);
+void freehash();
+void savemax();
+int spam();
+int sconn();
+void process_hist(int n0, struct beststr **bptr, int nbest);
+void addhistz(float, int);
+void ptime(FILE *, long);
+void closelib();
+void prhist(FILE *);
+void showbest();
+void showalign(int);
+void selectz(int, int);
+
+int
 main(argc, argv)
      int argc; char **argv;
 {
@@ -576,6 +622,7 @@ DNA sequence library.  Do not use a DNA scoring matrix.\n");
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
      int argc;
      char **argv;
@@ -695,6 +742,7 @@ initenv(argc,argv)
     fprintf(stderr," matrix file reset to %s\n",smptr);
 }
 
+void
 resetp(dnaseq)
      int dnaseq;
 {
@@ -711,6 +759,7 @@ resetp(dnaseq)
   }
 }
 
+void
 initparm()
 {
 	char *getenv(), *cptr;
@@ -724,6 +773,7 @@ initparm()
         looking for the max score, and use the pam matrix
 */
 
+void
 dhash()
 {
   int nd,ndo;		                 /* diagonal array size */
@@ -731,7 +781,7 @@ dhash()
   float zscor;
   int im, ib, nsave;
   int cmps();			/* comparison routine for ksort */
-  char *aa1ptr;
+  unsigned char *aa1ptr;
 #ifdef TFASTA
   int n10, i;
 #endif
@@ -862,6 +912,7 @@ dhash()
     }
   }
   
+void
 initpam2()
 {
   int i, j, k;
@@ -872,8 +923,9 @@ initpam2()
       pam2[j][i] = pam2[i][j] = pam[k++];
 }
 
+int
 shscore(aa0,n0)	/* calculate the 100% identical score */
-	char *aa0; int n0;
+	unsigned char *aa0; int n0;
 {
   int i, sum;
   for (i=0,sum=0; i<n0; i++)
@@ -881,6 +933,7 @@ shscore(aa0,n0)	/* calculate the 100% identical score */
   return sum;
 }
 
+void
 prhist(fd)
 	FILE *fd;
 {
@@ -1009,6 +1062,7 @@ prhist(fd)
 #define A_MARK ">>"
 #endif
 
+void
 showalign(nshow)
      int nshow;
 {
@@ -1017,7 +1071,7 @@ showalign(nshow)
   char fmt[40],fmt2[40];
   double lnscale;
   int lcont, ccont, loff;
-  char *aa1ptr;
+  unsigned char *aa1ptr;
   int olib;
 #ifdef TFASTA
   int n10;
@@ -1169,6 +1223,7 @@ showalign(nshow)
 #endif
 #endif
 
+void
 initbest(nbest)		/* allocate arrays for best sort */
 	int nbest;
 {
@@ -1201,6 +1256,7 @@ freebest()
 #endif	/* BIGMEM */
 	}
 
+void
 showbest()
 {
 	int ib, istart, istop;
@@ -1248,15 +1304,19 @@ showbest()
 #endif
 	if (outfd != stdout)
 #ifndef TFASTA
-	  if (zsflag)
+	  if (zsflag) {
 	    fprintf(stdout,"The best scores are:%s s-w Z-score E(%ld)\n",pad,nlib);
-	  else
+	  }
+	  else {
 	    fprintf(stdout,"The best scores are:%s s-w\n",pad);
+	  }
 #else
-	if (zsflag)
+	if (zsflag) {
  	  fprintf(stdout,"The best scores are:%s s-w Z-score E(%ld)\n",pad,nlib);
-	else
+	}
+	else {
  	  fprintf(stdout,"The best scores are:%s s-w\n",pad);
+	}
 #endif
 	istart = 0;
 l1:	istop = min(nbest,nshow);
@@ -1341,6 +1401,7 @@ l1:	istop = min(nbest,nshow);
 	if (outfd!=stdout) fprintf(outfd,"\n");
 	}
 
+void
 selectz(k,n)	/* k is rank in array */
      int k,n;
 {
@@ -1369,6 +1430,7 @@ selectz(k,n)	/* k is rank in array */
   }
 }
 
+void
 sortbest()
 {
 #ifndef FAR_PTR
@@ -1380,6 +1442,7 @@ sortbest()
 #endif
 	}
 
+void
 sortbeste()
 {
 #ifndef FAR_PTR
@@ -1391,6 +1454,7 @@ sortbeste()
 #endif
       }
 
+void
 sortbestz()
 {
 #ifndef FAR_PTR
@@ -1402,6 +1466,7 @@ sortbestz()
 #endif
       }
 
+int
 cmps(ptr1,ptr2)
 	struct beststr *ptr1, *ptr2;
 {
@@ -1411,6 +1476,7 @@ cmps(ptr1,ptr2)
 	}
 
 #ifdef FAR_PTR
+int
 fcmps(ptr1,ptr2)
 	struct beststr huge * ptr1, huge * ptr2;
 {
@@ -1420,6 +1486,7 @@ fcmps(ptr1,ptr2)
 	}
 #endif
 
+int
 cmpe(ptr1,ptr2)
 	struct beststr *ptr1, *ptr2;
 {
@@ -1429,6 +1496,7 @@ cmpe(ptr1,ptr2)
 	}
 
 #ifdef FAR_PTR
+int
 fcmpe(ptr1,ptr2)
 	struct beststr huge * ptr1, huge * ptr2;
 {
@@ -1438,6 +1506,7 @@ fcmpe(ptr1,ptr2)
 	}
 #endif
 
+int
 cmpz(ptr1,ptr2)
 	struct beststr *ptr1, *ptr2;
 {
@@ -1447,6 +1516,7 @@ cmpz(ptr1,ptr2)
 	}
 
 #ifdef FAR_PTR
+int
 fcmpz(ptr1,ptr2)
 	struct beststr huge * ptr1, huge * ptr2;
 {
@@ -1456,6 +1526,7 @@ fcmpz(ptr1,ptr2)
 	}
 #endif
 
+void
 kssort(v,n)
 	struct beststr *v[]; int n;
 {
@@ -1471,6 +1542,7 @@ kssort(v,n)
 				}
 	}
 
+void
 ksort(v,n,comp)
 	char *v[]; int n, (*comp)();
 {
@@ -1487,6 +1559,7 @@ ksort(v,n,comp)
 	}
 
 #ifdef FAR_PTR
+void
 fksort(v,n,comp)
 	void huge * huge *v;
 	int n, (*comp)();
@@ -1505,6 +1578,7 @@ fksort(v,n,comp)
 
 #endif
 
+int
 getlnames(tname)		/* read in the library names */
 	char *tname;
 {
@@ -1513,7 +1587,7 @@ getlnames(tname)		/* read in the library names */
 	char lline[120];
 	FILE *tptr;
 
-	if (*tname != '@') {addfile(tname,"\0"); return;}
+	if (*tname != '@') {addfile(tname,"\0"); return 0;}
 	else tname++;
 
 	if ((bp=strchr(tname,' '))!=NULL) {
@@ -1555,6 +1629,7 @@ getlnames(tname)		/* read in the library names */
 #define MAXCHFIL 80
 #define MAXCH 20
 
+void
 libchoice(lname,nl,aaenv)
 	char *lname, *aaenv;
 	int nl;
@@ -1618,6 +1693,7 @@ l1:		fprintf(stderr," library file name [%s]: ",aaenv);
 	}
 
 
+void
 libselect(lname)
 	char *lname;
 {
@@ -1654,6 +1730,7 @@ libselect(lname)
 char *lbptr;
 int nnsize;
 
+void
 addfile(fname,env)
      char *fname, *env;
 {
@@ -1693,7 +1770,8 @@ addfile(fname,env)
   nnsize -= len;
 }
 
-char *ulindex(str,chr)
+char *
+ulindex(str,chr)
      char *str, chr;
 {
   char c;

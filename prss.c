@@ -12,6 +12,8 @@
 #include <string.h>
 #include <ctype.h>
 
+int isatty();
+
 char *refstr="\nPlease cite:\n W.R. Pearson & D.J. Lipman PNAS (1988) 85:2444-2448;\n T. F. Smith and M. S. Waterman, (1981) J. Mol. Biol. 147:195-197\n";
 char *verstr="version 2.0u64, May, 1998";
 
@@ -56,7 +58,7 @@ long ntt;		/* number of library sequences, number of
 				residues scanned*/
 char libstr[21];	/* partial title from library sequence */
 
-char *aa0, *aa10, *aa1;	/* amino acid sequence data */
+unsigned char *aa0, *aa10, *aa1;	/* amino acid sequence data */
 int maxn;		/* max space for lib sequence (MAXDIAG-n0) */
 int n0, n1, nd, noff;	/* length of aa0, length of aa1, n0+n1,
 				diagonal offset */
@@ -117,6 +119,30 @@ char *iprompt0=" PRSS compares a test sequence to a shuffled sequence\n";
 char *iprompt1=" test sequence file name: ";
 char *iprompt2=" sequence to shuffle: ";
 
+extern int getseq(char *, unsigned char *, int, int *);
+void resetp();
+extern int gettitle(char *, char *, int);
+void initenv();  
+
+void initpam2();
+int initpam();
+void initparm();
+
+void inithist();
+void addhist();
+void prhist();
+int smatch();
+
+extern void irand();
+extern int nrand();
+
+void wshuffle();
+void shuffle();
+void initialize_hist();
+void free_hist();
+extern void est_lambda_K();
+
+int
 main(argc, argv)
      int argc; char **argv;
 {
@@ -353,6 +379,7 @@ main(argc, argv)
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
      int argc; char **argv;
 {
@@ -413,6 +440,7 @@ initenv(argc,argv)
     fprintf(stderr," matrix file reset to %s\n",smptr);
 }
 
+void
 resetp(dnaseq)
      int dnaseq;
 {
@@ -434,6 +462,7 @@ resetp(dnaseq)
   }
 }
 
+void
 initparm()
 {
   char *getenv(), *cptr;
@@ -442,6 +471,7 @@ initparm()
 }
 
 
+void
 initpam2()
 {
 	int i, j, k;
@@ -452,6 +482,7 @@ initpam2()
 			pam2[j][i] = pam2[i][j] = pam[k++];
 	}
 
+void
 inithist()
 {
 	int i;
@@ -462,8 +493,10 @@ inithist()
 	initialize_hist(MAXHIST);
 	}
 	
+void
 prhist(fd,score0, q_length, l_length)
-     FILE *fd; int score0;
+     FILE *fd;
+     int score0, q_length, l_length;
 {
   int i,j,hl;
   char hline[80], pch;
@@ -535,6 +568,7 @@ prhist(fd,score0, q_length, l_length)
   else fprintf(fd," %5.3g times\n",cum);
 }
 
+void
 addhist(score)
 	int score;
 {
@@ -548,7 +582,8 @@ addhist(score)
   hist[score]++;
 }
 
-void ssort(v,n)
+void
+ssort(v,n)
 	int *v; int n;
 {
 	int gap, i, j;
@@ -563,6 +598,7 @@ void ssort(v,n)
 	}
 
 int ieven = 1;
+void
 wshuffle(from,to,n,wsiz)	/* copies from from to from shuffling */
 	char  *from, *to; int n, wsiz;
 {
@@ -613,6 +649,7 @@ wshuffle(from,to,n,wsiz)	/* copies from from to from shuffling */
 	to[n] = -1;
 	}
 
+void
 shuffle(from,n)	/* copies from from to from shuffling */
 	char  *from; int n;
 {
@@ -627,6 +664,7 @@ shuffle(from,n)	/* copies from from to from shuffling */
 	from[n] = -1;
 	}
 
+int
 cmpi(val1,val2)
      int val1, val2;
 {
@@ -635,6 +673,7 @@ cmpi(val1,val2)
   else return 0;
 }
 
+void
 ksort(v,n,comp)
 	char *v[]; int n, (*comp)();
 {
@@ -653,15 +692,19 @@ ksort(v,n,comp)
 /*  stubs for linking */
 int llen;
 
+void
 aancpy()
 {}
 
 int markx;
+void
 disgraph()
 {}
 
+void
 ALIGN()
 {}
 
+void
 discons()
 {}

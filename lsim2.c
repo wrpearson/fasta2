@@ -22,6 +22,11 @@ int pmirror=0;
 #endif
 
 extern void opnline(long n0, long n1, int score, double e_val, double percent, int nc);
+extern int calcons();
+extern void cal_coord();
+extern void disgraph();
+extern void clsline();
+extern void discons();
 
 #define min(x,y) ((x)<=(y) ? (x) : (y))
 
@@ -278,7 +283,7 @@ void SIM(uchar *A,uchar *B,int M,int N,int K,int V[][32], int Q,int R,
 #ifndef TPLOT
 	    if (markx < 10) {
 	      if (have_stats) 
-		printf("\n %5.1f%% identity in %d %s overlap (%d-%d:%d-%d); score: %4d E(%d): %6.2g\n",
+		printf("\n %5.1f%% identity in %d %s overlap (%ld-%ld:%ld-%ld); score: %4d E(%d): %6.2g\n",
 		       percent,nc,sqnam,a_min0,a_max0,a_min1,a_max1,score,z_size,e_val);
 	      else 
 		printf("\n %5.1f%% identity in %d %s overlap (%d-%d:%d-%d); score: %4d\n",
@@ -990,7 +995,7 @@ void *ckalloc(size_t amount)
   mtotal += (long)amount;
 
   if ((p = malloc( (unsigned) amount)) == NULL) {
-    fprintf(stderr,"Ran out of near memory: %d/%ld\n",amount,mtotal);
+    fprintf(stderr,"Ran out of near memory: %ld/%ld\n",amount,mtotal);
     exit(1);
   }
   return(p);

@@ -2,11 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "alt_parms.h"
 
 static int stats_set=0;
 static double K, Lambda, H;
+
+int look_p();
 
 int
 set_stats(double lambda_v, double k_v) {

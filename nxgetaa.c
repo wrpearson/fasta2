@@ -109,11 +109,16 @@ static char o_line[256];
 
 void closelib();
 void revcomp(char *, int);
+int scanseq(unsigned char *, int, char *);
+
+extern int ncbl_openlib();
+extern void ncbl_closelib();
 
 int
 getseq(filen,seq,maxs,dnaseq)
-	char *filen, *seq;
-	int maxs, *dnaseq;
+     char *filen;
+     unsigned char *seq;
+     int maxs, *dnaseq;
 {
 	FILE *fptr;
 	char line[512],*bp;
@@ -1455,8 +1460,9 @@ gcg_ranlib(str,cnt,seek)
 
 int
 scanseq(seq,n,str)
-	char *seq, *str;
-	int n;
+     unsigned char *seq;
+     char *str;
+     int n;
 {
 	int tot,i;
 	char aaray[MAXSQ];		/* this must be set > nsq */

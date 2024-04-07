@@ -42,7 +42,7 @@ long lmark;		/* position in library file from ftell() */
 char libstr[21];	/* partial title from library sequence */
 char name0[11], name1[11];	/* for labeling output */
 
-char *aa0=NULL, *aa1=NULL;	/* amino acid sequence data */
+unsigned char *aa0=NULL, *aa1=NULL;	/* amino acid sequence data */
 char *seqc0, *seqc1;	/* aligned sequences */
 long sq0off=1, sq1off=1;
 
@@ -105,8 +105,20 @@ void initpam2(int *match, int *mismh);
 void initseq(int);
 void freeseq();
 int calcons(char *, int, char *, int, int *, int *, int *);
+int getseq(char *, unsigned char *, int, int *);
+void revcomp(unsigned char *, int);
+void gettitle(char *, char *, int);
+void SIM();
+void mk_n_pam();
+int standard_pam(), initpam();
 
+#ifdef TPLOT
+void openplt(long , long);
+void drawdiag(long, long);
+void closeplt();
+#endif
 
+int
 main(argc, argv)
      int argc; char **argv;
 {
@@ -117,7 +129,6 @@ main(argc, argv)
   int sq0save;
   char *getenv(), *cptr, *bp;
   float percent;
-
 
   maxseq = maxn = MAXTST+MAXLIB;
 

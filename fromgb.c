@@ -29,6 +29,7 @@ copies starting at column 11 until a // is found */
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define MAXNAME 80
 #define MAXLINE 128
@@ -38,6 +39,10 @@ char filin[MAXNAME], filout[MAXNAME];
 
 FILE *fin, *fout;
 
+void newname();
+void convert();
+
+int
 main(argc,argv)
 	int argc; char *argv[];
 {
@@ -102,6 +107,7 @@ l3:		if ((fout=fopen(filout,"w"))==NULL) {
 		    }
     }
 
+void
 newname(new,old,size)		/* take sequence.dat, make sequence.nt */
 	char *new, *old; int size;
 {
@@ -113,6 +119,7 @@ newname(new,old,size)		/* take sequence.dat, make sequence.nt */
 	strcat(new,".nt");
 	}
 
+void
 convert()	/* convert genbank file to FASTA type */
 {
 	char locus[MAXNAME];

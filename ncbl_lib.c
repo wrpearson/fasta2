@@ -44,6 +44,8 @@ static char dline[512];
 extern int (*getlib)();
 int ncbl_getliba(), ncbl_getlibn();
 
+void newname();
+
 int ncbl_openlib(name)
      char *name;
 {
@@ -243,7 +245,7 @@ int ncbl_getliba(seq,maxs,libstr,libpos,lcont)
   seq[seqcnt]= EOSEQ;
   return (seqcnt);
   
-error:	fprintf(stderr," error reading %ld at %ld\n",libstr,*libpos);
+error:	fprintf(stderr," error reading %s at %ld\n",libstr,*libpos);
   fflush(stderr);
   return (-1);
 }
@@ -345,11 +347,12 @@ ncbl_getlibn(seq,maxs,libstr,libpos,lcont)
     return (4*seqcnt);
   }
   
-error:	fprintf(stderr," error reading %ld at %ld\n",libstr,*libpos);
+error:	fprintf(stderr," error reading %s at %ld\n",libstr,*libpos);
   fflush(stderr);
   return (-1);
 }
 
+void
 ncbl_ranlib(str,cnt,libpos)
 	char *str; int cnt;
 	long libpos;
@@ -441,6 +444,7 @@ void src_fstr_read(fd, val, slen)
   fread(val,(size_t)slen,(size_t)1,fd);
 }
 
+void
 newname(nname,oname,suff,maxn)
 	char *nname, *oname, *suff;
 {

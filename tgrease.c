@@ -45,8 +45,8 @@ float fnum[] = {0.5,1.5,2.5,3.5,4.5,5.5,6.5,7.5,8.5};
 char *numstr[] = {"-4.0","-3.0","-2.0","-1.0"," 0.0"," 1.0"," 2.0",
 		  " 3.0", " 4.0"};
 
-#define MAXSEQ 2000
-char sequence[MAXSEQ];
+#define MAXSEQ 5000
+unsigned char sequence[MAXSEQ];
 
 long sq0off=1;
 
@@ -63,6 +63,21 @@ float f_fx, f_fy;
 #define SY(y) (int)(f_fy*(float)(y))
 #define FSY(y) (int)(f_fy*(y))
 
+extern int getseq(char *, unsigned char *, int, int *);
+extern void gettitle(char *, char *, int);
+
+extern void openpl();
+extern void closepl();
+extern void opnline();
+extern void clsline();
+extern void space();
+extern void move();
+extern void cont();
+extern void xaxis();
+extern void yaxis();
+extern void drawstr();
+
+int
 main (argc,argv)
      int argc; char *argv[];
 {

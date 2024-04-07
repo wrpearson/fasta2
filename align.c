@@ -46,7 +46,7 @@ char libstr[21];	/* partial title from library sequence */
 char name0[11], name1[11];	/* for labeling output */
 int ixstat;		/* >0 if annotations displayed */
 
-char *aa0, *aa1;	/* amino acid sequence data */
+unsigned char *aa0, *aa1;	/* amino acid sequence data */
 int *res;
 int nres;
 
@@ -92,6 +92,23 @@ char *iprompt2=" second sequence file name: ";
 
 #include "upam.gbl"		/* includes pam array */
 
+void initenv();
+
+extern int getseq(char *, unsigned char *, int, int *);
+void gettitle(char *, char *, int);
+void resetp();
+extern int openlib();
+extern int getlib();
+
+void initseq();
+extern int initpam();
+void initpam2();
+
+extern int ALIGN();
+int calcons();
+void discons();
+
+int
 main(argc, argv)
      int argc; char **argv;
 {
@@ -253,6 +270,7 @@ main(argc, argv)
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
      int argc;
      char **argv;
@@ -326,6 +344,7 @@ initenv(argc,argv)
     fprintf(stderr," reset matrix file to %s\n",smptr);
 }
 
+void
 resetp(dnaseq)
 	int dnaseq;
 {
@@ -344,6 +363,7 @@ resetp(dnaseq)
   }
 }
 
+void 
 initpam2()
 {
 	int i, j, k;
@@ -356,6 +376,7 @@ initpam2()
 
 int smin0, smin1, smins;	/* set bounds for discons */
 
+int
 calcons(aa0,n0,aa1,n1,res)
 	char *aa0, *aa1;
 	int n0, n1;
@@ -400,6 +421,7 @@ calcons(aa0,n0,aa1,n1,res)
 	return nc;
 	}
 
+void
 initseq(seqsiz)		/* initialize arrays */
 	int seqsiz;
 {
@@ -411,6 +433,8 @@ initseq(seqsiz)		/* initialize arrays */
 		 exit(1);}
 	}
 
+
+void
 freeseq()
 {
 	free(seqc0); free(seqc1);

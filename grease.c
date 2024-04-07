@@ -31,7 +31,7 @@ float factor[] = {0.0,0.6,1.0,1.0,1.0,3.6,1.0,1.3,1.0,1.0,3.8,4.1,
 	6.3,2.9,8.7,3.2,7.0,6.4,9.0,8.2,3.6,7.2, 4.5};
 
 #define MAXSEQ 10000
-char sequence[MAXSEQ];
+unsigned char sequence[MAXSEQ];
 
 long sq0off=1;
 
@@ -39,6 +39,11 @@ float value[MAXSEQ];
 #define MAXT 60
 char title[MAXT];
 
+int getseq(char *, unsigned char *, int, int *);
+void gettitle(char *, char *, int);
+void makemap();
+
+int
 main (argc,argv)
      int argc; char *argv[];
 {
@@ -127,6 +132,7 @@ main (argc,argv)
   exit(0);
 }
 
+void
 makemap(input,map,n)
      char *input; int *map, n;
 {

@@ -16,6 +16,11 @@ char nt[]={"\0ACGTURYMWSKDHVBNX"};
 FILE *ntfd;
 char fname[120];
 
+void initmat();
+int fgetseq(unsigned char *, int, char *, FILE *);
+void revcomp();
+
+int 
 main(argc,argv)
      int argc; char **argv;
 {
@@ -59,6 +64,7 @@ main(argc,argv)
 #define AAMASK 127
 int nascii[128];
 
+void
 initmat(aa,naa)
      char *aa; int naa;
 {
@@ -79,7 +85,8 @@ initmat(aa,naa)
   nascii['U'] = nascii['u'] = nascii['T'];
 }
 
-fgetseq(unsigned char *seq, int maxs,char *libstr, FILE *fptr)
+int
+fgetseq(unsigned char *seq, int maxs, char *libstr, FILE *fptr)
 {
   char line[512],*bp;
   int i, n;
@@ -102,8 +109,8 @@ fgetseq(unsigned char *seq, int maxs,char *libstr, FILE *fptr)
 
   return n;
 }
-
 	
+void
 revcomp(unsigned char *seq, int n)
 {
   unsigned char tmp;

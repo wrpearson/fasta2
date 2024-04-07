@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -29,7 +30,7 @@ long loffset = 0l;		/* offset into sequence */
 char libstr[21];	/* partial title from library sequence */
 char name0[11], name1[11];	/* for labeling output */
 
-char *aa0, *aa1;	/* amino acid sequence data */
+unsigned char *aa0, *aa1;	/* amino acid sequence data */
 int n0, n1, maxn;	/* length of aa0, length of aa1 */
 int nlib;
 long ntt;
@@ -67,6 +68,22 @@ long tstart, tscan, tdone, sstime();
 
 extern int optind;
 char *libenv, *aaenv, *smptr, smstr[QFILE_SIZE];
+
+extern int getseq(char *, unsigned char *, int, int *);
+extern int getlib(unsigned char *, int, char *, long *, int *);
+
+void initenv(int, char **);
+int initpam();
+void resetp();
+void initpam2();
+void inithist();
+void addhist();
+void prhist();
+void dhash();
+int spam(unsigned char *, unsigned char *, int);
+
+extern int ptime();
+extern int openlib();
 
 #include "upam.gbl"		/* includes pam array */
 
@@ -176,6 +193,7 @@ main(argc, argv)
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
      int argc; char **argv;
 {
@@ -217,6 +235,7 @@ initenv(argc,argv)
   if (strlen(smptr)>0) fprintf(stderr," using matrix file %s\n",smptr);
 }
 
+void
 resetp(dnaseq)
      int dnaseq;
 {
@@ -232,12 +251,13 @@ resetp(dnaseq)
 
 /*	hashaa - hash sequence 0 for rapid lookup of seq 1 (library) */
 
+void
 dhash()
 {
   int i0, i1;
   int  lcont, ocont, loff;
   long lmark;
-  char *aa1ptr;
+  unsigned char *aa1ptr;
 
   loffset=0l;
   lcont=0;
@@ -270,8 +290,9 @@ dhash()
   }
 }
 
+int
 spam(sq0, sq1, n)
-     char *sq0, *sq1; int n;
+     unsigned char *sq0, *sq1; int n;
 {
   int tot;
   tot = 0;
@@ -279,6 +300,7 @@ spam(sq0, sq1, n)
   return tot;
 }
 
+void
 initpam2()
 {
   int i, j, k;
@@ -289,6 +311,7 @@ initpam2()
       pam2[j][i] = pam2[i][j] = pam[k++];
 }
 
+int
 shscore(aa0,n0)	/* calculate the 100% identical score */
      char *aa0; int n0;
 {
@@ -298,6 +321,7 @@ shscore(aa0,n0)	/* calculate the 100% identical score */
   return sum;
 }
 	
+void
 inithist()
 {
   int i;
@@ -307,6 +331,7 @@ inithist()
   nmean = 0l;
 }
 
+void
 prhist(fd)
      FILE *fd;
 {
@@ -372,6 +397,7 @@ prhist(fd)
   fprintf(fd,"\n");
 }
 
+void
 addhist(score)
      int score;
 {

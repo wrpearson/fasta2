@@ -17,6 +17,10 @@ int nlinarr=5;
 
 float fxscal, fyscal, fxoff, fyoff;
 
+void clsline();
+void linetype();
+
+
 openpl()
 {
   time_t tt;
@@ -45,6 +49,7 @@ openpl()
   linetype(0);
 }
 	
+void
 linetype(type)
 	int type;
 {
@@ -52,6 +57,7 @@ linetype(type)
 	 rlincol[type],glincol[type],blincol[type]);
 }
 
+void
 closepl()
 {
   printf("%%%%Trailer\n");
@@ -59,6 +65,7 @@ closepl()
   printf("%%%%EOF\n");
 }
 
+void
 space(x0,y0,x1,y1)
 	int x0, x1, y0, y1;
 {
@@ -68,6 +75,7 @@ space(x0,y0,x1,y1)
 	fyscal = (float)(max_y)/(float)(y1-y0);
 	}
 
+void
 move(x,y)
 	int x, y;
 {
@@ -77,6 +85,7 @@ move(x,y)
 	printf("%d %d moveto\n",xx,yy);
 	}
 
+void
 cont(x,y)
 	int x, y;
 {
@@ -86,6 +95,7 @@ cont(x,y)
   printf("%d %d lineto\n",xx,yy);
 }
 
+void
 drawstr(str)
 	char *str;
 {
@@ -99,6 +109,7 @@ drawstr(str)
 
 int tarr[] = {10,20,50,100,200,500,1000,2000,5000};
 int ntarr = sizeof(tarr);
+void
 xaxis(int n, char *title)
 {
   int i, jm, tick;
@@ -128,6 +139,7 @@ xaxis(int n, char *title)
   drawstr(title);
 }
 
+void
 clsline()
 {
   printf("stroke\n");

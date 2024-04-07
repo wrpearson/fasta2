@@ -47,7 +47,7 @@ char   *mfname;
      if (line[i] == '*') continue;
      if (line[i] > ' ') sq[nsq++] = toupper (line[i]);
    }
-   nsq;
+   /*   nsq; */
 
 /* initialize sascii */
    for (iaa = 0; iaa < nsq; iaa++) {

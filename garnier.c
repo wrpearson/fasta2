@@ -34,7 +34,7 @@ int amap[20];
 int nna = 20;
 
 #define MAXSEQ 5000
-char seq[MAXSEQ];
+unsigned char seq[MAXSEQ];
 char type[MAXSEQ];
 #define MAXT 60
 char title[MAXT];
@@ -52,6 +52,11 @@ int dnaseq= -1;
 int n0;
 long sq0off=1;
 
+extern int getseq(char *, unsigned char *, int, int *);
+extern void gettitle(char *, char *, int);
+void makemap();
+
+int
 main(argc,argv)
 	int argc; char *argv[];
 {
@@ -194,6 +199,7 @@ main(argc,argv)
   exit(0);
 }
 
+void
 makemap(input,map,n)
      char *input; int *map, n;
 {

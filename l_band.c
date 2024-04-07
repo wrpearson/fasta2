@@ -33,6 +33,10 @@ static int *CC=NULL, *DD;
 #define max(x,y)  ((x) >= (y) ? (x) : (y))
 #define min(x,y)  ((x) <= (y) ? (x) : (y))
 
+void fatal();
+
+
+
 int LOCAL_ALIGN(A,B,M,N,low,up,W,G,H,dflag,psi,psj,pei,pej,MW)
 char A[],B[]; int M,N,low,up; int W[][32],G,H;
 int dflag;
@@ -421,6 +425,7 @@ char *ckalloc(amount)
 }
 
 /* fatal - print message and die */
+void
 fatal(msg)
 char *msg;
 {
@@ -430,7 +435,7 @@ char *msg;
 
 /* dummy for zzlgmata.c */
 
-int ALIGN() {}
+int ALIGN() {return 0;}
 
 #endif
 

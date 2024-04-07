@@ -17,6 +17,7 @@ the nt alphabet. It uses 3,3 because T and U are considered separately
 */
 static int tnt[]={0,1,2,3,3,0,1,0,0,1,2,0,0,0,1,0,0};
 
+int
 aatran(ntseq,aaseq,maxs,frame)
 	char *ntseq, *aaseq;
 	int maxs, frame;
@@ -116,6 +117,7 @@ saatran(ntseq,aaseq,maxs,frame)
   return iaa;
 }
 
+void
 aainit()
 {
 	int i,j;
@@ -129,6 +131,7 @@ aainit()
 /* guarantee that you have a nucleotide sequence for aatran
 	return 1 for yes, 0 for no */
 
+int
 check_nt(unsigned char *aa0, int n0, int *idx)
 {
   int i;

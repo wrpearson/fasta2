@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 
 #define TRUE 1
 #define FALSE 0
@@ -13,7 +14,7 @@
 #define MAXLIB 3000	/* longest library sequence (not used) */
 #define MAXDIAG 4000	/* sum of test and library sequence */
 
-char *aa0;
+unsigned char *aa0;
 int n0;
 long sq0off=1;
 
@@ -33,6 +34,14 @@ int dnaseq = 0;
 extern int optind;
 char smstr[40], *smptr;
 
+void initenv();
+extern int getseq(char *, unsigned char *, int, int *);
+void resetp();
+int initpam();
+void initpam2();
+int shscore();
+
+int
 main(argc, argv)
 	int argc; char **argv;
 {
@@ -71,6 +80,7 @@ main(argc, argv)
 
 extern int *sascii, nascii[], aascii[];
 
+void
 initenv(argc,argv)
 	int argc; char **argv;
 {
@@ -111,6 +121,7 @@ initenv(argc,argv)
 	if (strlen(smptr)>0) fprintf(stderr," using matrix file %s\n",smptr);
 	}
 
+void
 resetp(dnaseq)
 	int dnaseq;
 {
@@ -121,6 +132,7 @@ resetp(dnaseq)
   }
 }
 
+int
 shscore(aa0,n0)	/* calculate the 100% identical score */
 	char *aa0; int n0;
 {
@@ -130,6 +142,7 @@ shscore(aa0,n0)	/* calculate the 100% identical score */
 	return sum;
 	}
 
+void
 initpam2()
 {
 	int i, j, k;

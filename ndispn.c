@@ -23,8 +23,11 @@ extern long sq0off, sq1off;
 extern char name0[],name1[];
 extern int llen, markx, showall;
 
+int iidex();
+
 #define MAXOUT 201
 
+void
 discons(seqc0, seqc1, nc)
      char *seqc0, *seqc1;
      int nc;
@@ -260,6 +263,7 @@ void cal_coord(int n0, int n1,
 
 static float gscale= -1.0;
 
+void
 disgraph(n0,n1,percent,score,min0,min1,max0,max1)
      int n0, n1, min0, min1, max0, max1;
      float percent;
@@ -297,6 +301,7 @@ disgraph(n0,n1,percent,score,min0,min1,max0,max1)
     fprintf(outfd,">%-6s %4d-%4d:%s\n", name1,min0+1,max0,line);
 }
 
+void
 aancpy(to,from,count)
      char *to, *from;
      int count;
@@ -310,6 +315,7 @@ aancpy(to,from,count)
   *tp=0;
 }
 
+void
 r_memcpy(dest,src,cnt)
      char *dest, *src;
      int cnt;
@@ -317,6 +323,7 @@ r_memcpy(dest,src,cnt)
   while (cnt--) *dest++ = *src++;
 }
 
+void
 l_memcpy(dest,src,cnt)
      char *dest, *src;
      int cnt;
@@ -326,6 +333,7 @@ l_memcpy(dest,src,cnt)
   while (cnt--) *--dest = *--src;
 }
 
+int
 iidex(str, chr)
 	char *str, chr;
 {
@@ -334,6 +342,8 @@ iidex(str, chr)
 	return (-1);
 	}
 
+void
 opnline() {}
 
+void
 clsline() {}

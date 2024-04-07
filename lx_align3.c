@@ -3,13 +3,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define SGW1 100
 #define SGW2 300
 #define WIDTH 60
 
 #define max(a,b) ((a) > (b) ? (a) : (b))
-
 
 /* code above is to convert sequence into numbers */
 
@@ -38,15 +38,18 @@ void *ckalloc();
 static match_ptr small_global(), global();
 static local_align(), find_best(), init_row(),  init_ROW();
 
-extern int pro_dna(char *prot_seq,  /* array with protein sequence numbers*/
-	       int len_prot,    /* length of prot. seq */
-	       char *dna_prot_seq, /* translated DNA sequence numbers*/
-	       int len_dna_prot,   /* length trans. seq. */
-	       int pam_matrix[][32],   /* scoring matrix */
-	       int gopen, int gex, /* gap open, gap extend penalties */
-	       int gshift,         /* frame-shift penalty */
-	       int *alignment,  /*store the alignment*/
-	       int *nres)
+void fatal(char *);
+
+int
+pro_dna(char *prot_seq,  /* array with protein sequence numbers*/
+	int len_prot,    /* length of prot. seq */
+	char *dna_prot_seq, /* translated DNA sequence numbers*/
+	int len_dna_prot,   /* length trans. seq. */
+	int pam_matrix[][32],   /* scoring matrix */
+	int gopen, int gex, /* gap open, gap extend penalties */
+	int gshift,         /* frame-shift penalty */
+	int *alignment,  /*store the alignment*/
+	int *nres)
 {
 	match_ptr align, ap, aq;
 	int x, y, ex, ey, i;
@@ -649,6 +652,7 @@ int amount;
 }
 
 /* fatal - print message and die */
+void
 fatal(msg)
 char *msg;
 {

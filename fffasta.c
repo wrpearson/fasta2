@@ -197,6 +197,7 @@ extern int sfnum;
 #define GETLIB (*getlib)
 #define RANLIB (*ranlib)
 #else
+extern int getlib(), ranlib();
 #define GETLIB getlib
 #define RANLIB ranlib
 #endif
@@ -383,8 +384,8 @@ extern int optind;
 int outtty;
 #else
 extern int outtty;
-float zs_to_E(float zs, int n) {};
-float zs_to_Ec(float zs) {};
+float zs_to_E(float zs, int n) {return 0.0;}
+float zs_to_Ec(float zs) {return 0.0;}
 #endif
 
 char *libenv, *aaenv, *smptr;
@@ -428,27 +429,72 @@ char *iprompt0=" FASTA searches a protein or DNA sequence data bank\n";
 #endif
 
 void initenv(int, char **);
-int getseq(char *, char *, int, int *);
+int getseq(char *, unsigned char *, int, int *);
+#ifdef FASTX
+int getntseq(char *, unsigned char *, int, int *);
+int check_nt(unsigned char*, int, int *);
+#endif
 void gettitle(char *, char *, int n);
-void revcomp(char *, int);
+void revcomp(unsigned char *, int);
 void resetp(int);
+void reseta(int);
 void libchoice(char *, int, char *);
 void libselect(char *);
 void addfile(char *, char *);
 int initpam(char *);
 void initpam2();
+
+#if defined(TFASTX) || defined(TFASTA) || defined(FASTX)
+void aainit();
+int aatran();
+int saatran();
+extern int pmatch(unsigned char *, int, unsigned char *, int,
+		  unsigned char *, int, int);
+#endif
+
 void initparm();
-void hashaa(char *, int, int);
+void hashaa(unsigned char *, int, int);
 void allocdiag(int);
 void initbest(int);
 int openlib(char *, char *);
 void sortbest(), sortbeste();
+void sortbestz();
 void ksort(struct beststr *v[], int n, int (*cmp)(int));
 void kssort(struct beststr *v[], int n);
 void kpsort(struct beststr *v[], int n);
+int shscore(unsigned char *, int);
+void allochash(int, int);
 void dhash();
 void freehash();
+void savemax();
+int spam();
+int sconn();
+void process_hist(int n0, struct beststr **bptr, int nbest);
+void addhistz(float, int);
+void ptime(FILE *, long);
+void closelib();
+void prhist(FILE *);
+void showbest();
+void showalign(int);
+void selectz(int, int);
 
+#ifndef LFASTA
+int dmatch(int, int);
+#else
+int dmatch(int, int,int);
+#endif
+
+#ifdef TPLOT
+void openplt();
+void drawdiag();
+void closeplt();
+#endif
+
+int smatch(unsigned char *, int, unsigned char *, int, int);
+
+#ifdef LFASTA
+void showlocal(int);
+#endif
 
 #include "upam.gbl"		/* includes pam array */
 
@@ -1004,7 +1050,7 @@ DNA sequence library.  Do not use a DNA scoring matrix.\n");
   closeplt();
 #else
   if (markx==10) {
-    fprintf(outfd,"\n>>>%s%s, %d %s vs %s, %d %s\n",
+    fprintf(outfd,"\n>>>%s%s, %d %s vs %s, %ld %s\n",
 	    tname, compstr, n0, qsqnam, lname, ntt,sqnam);
     fprintf(outfd,"; pg_name: %s\n",progstr);
     fprintf(outfd,"; pg_ver: %s\n",verstr);
@@ -1255,6 +1301,7 @@ void initenv(argc,argv)
     fprintf(stderr," matrix file reset to %s\n",smptr);
 }
 
+void
 reseta(dnaseq)
      int dnaseq;
 {
@@ -1263,6 +1310,7 @@ reseta(dnaseq)
   strcpy(sqtype,"protein");
 }
 
+void
 resetp(dnaseq)
 	int dnaseq;
 {
@@ -1313,8 +1361,9 @@ void initparm()
 
 /*	hashaa - hash sequence 0 for rapid lookup of seq 1 (library) */
 
+void
 hashaa(aa0, n0, ktup)
-     char *aa0; int n0, ktup;
+     unsigned char *aa0; int n0, ktup;
 {
   int mhv,phv;
   int i0, hv;
@@ -1373,8 +1422,9 @@ hashaa(aa0, n0, ktup)
     for (i0=0; i0<nsq; i0++) pamh1[i0]=fact;
 }
 
+void
 allochash(n0, hmax)
-	int n0, hmax;
+     int n0, hmax;
 {
 
 	if ((harr=(int *)calloc((size_t)hmax,sizeof(int)))== NULL) {
@@ -2071,8 +2121,9 @@ sconn(v,n)
   else return (0);
 }
 
+int
 shscore(aa0,n0)	/* calculate the 100% identical score */
-     char *aa0; int n0;
+     unsigned char *aa0; int n0;
 {
   int i, sum;
   for (i=0,sum=0; i<n0; i++)
@@ -2080,9 +2131,9 @@ shscore(aa0,n0)	/* calculate the 100% identical score */
   return sum;
 }
 
-
+void
 prhist(fd)
-	FILE *fd;
+     FILE *fd;
 {
   int i,j;
   long hl,hll, el, ell, ev, maxval, maxvalt;
@@ -2238,8 +2289,9 @@ prhist(fd)
   fflush(fd);
 }
 
+void
 allocdiag(dsize)	/* allocates diagonal structures */
-	int dsize;
+     int dsize;
 {
 
 #ifdef I86BUG
@@ -2263,6 +2315,7 @@ allocdiag(dsize)	/* allocates diagonal structures */
 #define A_MARK ">>"
 #endif
 
+void
 showalign(nshow)
      int nshow;
 {
@@ -2470,6 +2523,7 @@ showalign(nshow)
 #endif
 
 #ifdef LFASTA
+void
 showlocal(nshow)
 	int nshow;
 {
@@ -2527,8 +2581,9 @@ showlocal(nshow)
 		ChkEvent();
 #endif
 #ifndef TPLOT
-		if (dmatch(smark[1],smark[3],YES)>=0 && markx < 10) 
+		if (dmatch(smark[1],smark[3],YES)>=0 && markx < 10) {
 		  fprintf(outfd,"\n----------\n");
+		}
 #else		/* !TPLOT */
 		dmatch(smark[1],smark[3],NO);
 #endif		/* TPLOT */
@@ -2544,8 +2599,9 @@ showlocal(nshow)
 #endif
 #endif
 
+void
 initbest(nbest)		/* allocate arrays for best sort */
-	int nbest;
+     int nbest;
 {
 #ifndef FAR_PTR
 	if ((best=(struct beststr *)calloc((size_t)nbest,sizeof(struct beststr)))
@@ -2564,6 +2620,7 @@ initbest(nbest)		/* allocate arrays for best sort */
 #endif	/* FAR_PTR */
 	}
 
+void
 freebest()
 {
 #ifndef BIGMEM
@@ -2575,10 +2632,10 @@ freebest()
 	FFREE(best);
 #endif	/* FAR_PTR */
 #endif	/* BIGMEM */
-	}
-
+}
 
 #ifndef LFASTA
+void
 showbest()
 {
 	int ib, istart, istop;
@@ -2624,18 +2681,23 @@ showbest()
 	pad[llen-31]='\0';
 #endif
 
-	if (zsflag)
+	if (zsflag) {
 	  fprintf(outfd,"The best scores are:%sinitn init1 opt  z-sc E(%ld)\n",
 		  pad,num_db_entries);
-	else
+	}
+	else {
 	  fprintf(outfd,"The best scores are:%sinitn init1 opt\n",pad);
+	}
 
-	if (outfd != stdout)
-	  if (zsflag)
+	if (outfd != stdout) {
+	  if (zsflag) {
 	    printf("The best scores are:%sinitn init1 opt  z-sc E(%ld)\n",
 		   pad,num_db_entries);
-	  else
+	  }
+	  else {
 	    printf("The best scores are:%sinitn init1 opt\n",pad);
+	  }
+	}
 
 	istart = 0;
 l1:	istop = min(nbest,nshow);
@@ -2874,6 +2936,7 @@ sortbeste()
 #endif
 }
 
+void
 sortbestz()
 {
 #ifndef FAR_PTR
@@ -3180,12 +3243,13 @@ libselect(lname)
 
   if (strlen(lname)>1 && *lname != '%') getlnames(lname);
   else {
-    if (*lname=='%')
+    if (*lname=='%') {
       if (*flstr=='\0') {
 	fprintf(stderr," FASTLIBS undefined, cannot use %s\n",lname);
 	exit(1);
       }
-      else lname++;
+      else { lname++; }
+    }
     if (strlen(flstr)>0) {
       if ((fch=fopen(flstr,"r"))==NULL) {
 	fprintf(stderr," cannot open choice file: %s\n",flstr);

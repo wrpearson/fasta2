@@ -4,8 +4,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-char *aa0;
+unsigned char *aa0;
 int n0;
 #define MAXSEQ 5000
 
@@ -30,6 +31,10 @@ int wtwt;
 FILE *aafd;
 char fname[120];
 
+int fgetseq(unsigned char *, int, FILE *);
+void initmat();
+
+int
 main(argc,argv)
      int argc; char **argv;
 {
@@ -78,6 +83,7 @@ main(argc,argv)
 #define AAMASK 127
 int aascii[128];
 
+void
 initmat(aa,naa)
      char *aa; int naa;
 {
@@ -99,8 +105,9 @@ initmat(aa,naa)
   }
 }
 
+int
 fgetseq(seq,maxs,fptr)
-     char *seq; int maxs; FILE *fptr;
+     unsigned char *seq; int maxs; FILE *fptr;
 {
   char line[120];
   int i, n;
