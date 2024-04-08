@@ -147,7 +147,7 @@ main(argc, argv)
   if (argc-optind < 3) {
 #ifndef __MWERKS__
     fputs(iprompt0,stdout);
-    fprintf(stdout," %s%s\n",verstr,refstr);
+    fprintf(stdout," %s %s\n",verstr,refstr);
   l1:	fputs(iprompt1,stdout);
     fflush(stdout);
     if (fgets(tname,sizeof(tname),stdin)==NULL) exit(0);
@@ -193,7 +193,7 @@ main(argc, argv)
   }
   else {
     fputs(iprompt0,stdout);
-    fprintf(stdout," %s%s\n",verstr,refstr);
+    fprintf(stdout," %s\n%s\n",verstr,refstr);
     strncpy(tname,argv[optind+1],sizeof(tname));
     if ((n0=getseq(tname,aa0,maxn,&dnaseq))==0) {
       fprintf(stderr," %s : %s sequence not found\n",tname,sqtype);
